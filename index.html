@@ -1548,6 +1548,67 @@ body::before {
 <div class="toast" id="toast"></div>
 
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+  import { getDatabase, ref, set, push, onValue, onChildAdded } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBbs_ejpYtY9rMfbgQ9l-Je3IhATbDyyF3U",
+    authDomain: "remix-wheel.firebaseapp.com",
+    databaseURL: "https://remix-wheel-default-rtdb.firebaseio.com",
+    projectId: "remix-wheel",
+    storageBucket: "remix-wheel.firebasestorage.app",
+    messagingSenderId: "1014417698366",
+    appId: "1:1014417698366:web:4158d67827b5c654c32b6f",
+    measurementId: "G-PZN0912TX3"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  window.__firebaseBridge = {
+    ready: Promise.resolve(),
+
+    async setPranks(pranks) {
+      await set(ref(db, "global/pranks"), pranks || {});
+    },
+
+    async sendMessage(message) {
+      await set(push(ref(db, "global/messages")), {
+        name: String(message?.name || "Админ"),
+        text: String(message?.text || ""),
+        ts: Number(message?.ts || Date.now())
+      });
+    },
+
+    async setState(state) {
+      await set(ref(db, "global/state"), state || {});
+    },
+
+    listen({ onPranks, onState, onMessage }) {
+      onValue(ref(db, "global/pranks"), snap => {
+        const value = snap.val();
+        onPranks && onPranks(value && typeof value === "object" ? value : {});
+      });
+
+      onValue(ref(db, "global/state"), snap => {
+        const value = snap.val();
+        if (value && typeof value === "object") onState && onState(value);
+      });
+
+      onChildAdded(ref(db, "global/messages"), snap => {
+        const msg = snap.val();
+        if (!msg || !msg.text) return;
+        // Не показываем старые сообщения при открытии страницы.
+        if (Number(msg.ts || 0) < Date.now() - 15000) return;
+        onMessage && onMessage(msg);
+      });
+    }
+  };
+
+  window.dispatchEvent(new Event("firebase-ready"));
+</script>
+
 <script>
 const orbit             = document.getElementById('orbit');
 const spinBtn           = document.getElementById('spin');
@@ -2048,7 +2109,46 @@ window.addEventListener('message', e => {
 
   let syncCh = null;
   try { syncCh = new BroadcastChannel(SYNC_CH); } catch(e){}
-  const broadcast = msg => { if (syncCh) { try { syncCh.postMessage(msg); } catch(e){} } };
+  const broadcast = msg => {
+    if (syncCh) { try { syncCh.postMessage(msg); } catch(e){} }
+  };
+
+  // Firebase — общая синхронизация для ВСЕХ открытых страниц.
+  function firebasePranksObject(){
+    const result = {};
+    activePranks.forEach(id => { result[id] = true; });
+    return result;
+  }
+
+  function firebaseSetPranks(){
+    try {
+      if (window.__firebaseBridge) {
+        window.__firebaseBridge.setPranks(firebasePranksObject()).catch(e => {
+          console.error("Firebase prank sync:", e);
+          adminLog("Firebase: не удалось синхронизировать прикол", "err");
+        });
+      }
+    } catch(e) {}
+  }
+
+  function firebaseSetState(state){
+    try {
+      if (window.__firebaseBridge) {
+        window.__firebaseBridge.setState(state).catch(e => console.error("Firebase state sync:", e));
+      }
+    } catch(e) {}
+  }
+
+  function firebaseSendMessage(message){
+    try {
+      if (window.__firebaseBridge) {
+        window.__firebaseBridge.sendMessage(message).catch(e => {
+          console.error("Firebase message sync:", e);
+          adminLog("Firebase: не удалось отправить сообщение", "err");
+        });
+      }
+    } catch(e) {}
+  }
 
   function openDB(){
     return new Promise((res, rej) => {
@@ -2172,6 +2272,7 @@ window.addEventListener('message', e => {
     const state = getInputState();
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){}
     broadcast({ type: 'state', state });
+    firebaseSetState(state);
   }
   function loadInitialState(){ try { const raw = localStorage.getItem(STORAGE_KEY); if (raw) return JSON.parse(raw); } catch(e){} return null; }
 
@@ -3003,16 +3104,30 @@ window.addEventListener('message', e => {
     if (id === 'upgradetime' && upgradeAnimating) return;
     const on = !activePranks.has(id);
     applyPrank(id, on, false);
+
+    // Локально + BroadcastChannel для вкладок + Firebase для всех пользователей.
     broadcast({ type: 'prank', id, on });
+    firebaseSetPranks();
+
     adminLog((on ? 'Запущено: ' : 'Остановлено: ') + PRANKS[id].name, on ? '' : 'ok');
     if (on && !PRANKS[id].persistent && PRANKS[id].duration){
-      setTimeout(() => { if (activePranks.has(id)){ applyPrank(id, false, false); broadcast({ type: 'prank', id, on: false }); } }, PRANKS[id].duration);
+      setTimeout(() => {
+        if (activePranks.has(id)){
+          applyPrank(id, false, false);
+          broadcast({ type: 'prank', id, on: false });
+          firebaseSetPranks();
+        }
+      }, PRANKS[id].duration);
     }
   }
 
   function stopAllPranks(silent = false){
     const ids = [...activePranks];
-    ids.forEach(id => { applyPrank(id, false, silent); if (!silent) broadcast({ type: 'prank', id, on: false }); });
+    ids.forEach(id => {
+      applyPrank(id, false, silent);
+      if (!silent) broadcast({ type: 'prank', id, on: false });
+    });
+    firebaseSetPranks();
     if (!silent) adminLog('СТОП ВСЁ: все приколы выключены', 'err');
   }
 
@@ -3039,8 +3154,12 @@ window.addEventListener('message', e => {
     const name = (bcNameEl.value || '').trim() || 'Админ';
     const text = (bcMessageEl.value || '').trim();
     if (!text){ adminLog('Сообщение пустое — не отправлено', 'err'); return; }
-    broadcast({ type: 'broadcast-message', name, text, ts: Date.now() });
-    showBroadcastMsg(name, text); adminLog('📢 ' + name + ': ' + text, 'ok');
+
+    const message = { type: 'broadcast-message', name, text, ts: Date.now() };
+    broadcast(message);
+    firebaseSendMessage(message);
+    showBroadcastMsg(name, text);
+    adminLog('📢 ' + name + ': ' + text, 'ok');
     bcMessageEl.value = '';
   }
   if (bcSendBtn) bcSendBtn.addEventListener('click', sendBroadcast);
@@ -3166,6 +3285,44 @@ window.addEventListener('message', e => {
     }
   });
 
+  function setupFirebaseSync(){
+    const bridge = window.__firebaseBridge;
+    if (!bridge) return;
+
+    bridge.listen({
+      onPranks: incoming => {
+        const next = new Set(
+          Object.keys(incoming || {}).filter(id => incoming[id] === true && PRANKS[id])
+        );
+
+        // Firebase является источником истины для глобальных приколов.
+        [...activePranks].forEach(id => {
+          if (!next.has(id)) applyPrank(id, false, true);
+        });
+        next.forEach(id => {
+          if (!activePranks.has(id)) applyPrank(id, true, true);
+        });
+        updateAdminTiles();
+      },
+
+      onState: async state => {
+        await handleStateChange(state);
+      },
+
+      onMessage: message => {
+        showBroadcastMsg(message.name, message.text);
+      }
+    });
+  }
+
+  function waitForFirebase(){
+    if (window.__firebaseBridge) {
+      setupFirebaseSync();
+    } else {
+      window.addEventListener('firebase-ready', setupFirebaseSync, { once: true });
+    }
+  }
+
   async function init(){
     loadInitialState();
     try { audioKeys = new Set(await idbKeys()); } catch(e){ audioKeys = new Set(); }
@@ -3176,10 +3333,11 @@ window.addEventListener('message', e => {
       if (window.ResizeObserver){ new ResizeObserver(resize).observe(wrapEl); } else { window.addEventListener('resize', resize); }
       resize();
 
-      const saved = loadPranks();
-      saved.forEach(id => { applyPrank(id, true, true); });
+      // Глобальные приколы теперь берутся из Firebase.
+      // Старое localStorage-состояние специально не применяем,
+      // чтобы один пользователь не видел устаревший локальный эффект.
 
-      if (!saved.has('upgradetime')){
+      if (!activePranks.has('upgradetime')){
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
             document.body.classList.add('site-entrance');
@@ -3190,6 +3348,7 @@ window.addEventListener('message', e => {
     }
   }
   init();
+  waitForFirebase();
 })();
 </script>
 </body>
