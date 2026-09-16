@@ -747,22 +747,6 @@
     animation: fx-bubble-rise linear forwards;
   }
   @keyframes fx-bubble-rise{ to { transform: translateY(-115vh) translateX(var(--drift, 0)); opacity: 0; } }
-  .fx-mystery{ position: fixed; inset: 0; z-index: 99993; display: grid; place-items: center; pointer-events: none; opacity: 0; transition: opacity .35s; }
-  .fx-mystery.show{ opacity: 1; }
-  .fx-mystery-text{
-    font-size: clamp(26px, 6.5vh, 58px); font-weight: 900; color: #fff; text-align: center;
-    padding: 22px 42px;
-    background: linear-gradient(135deg, rgba(20,22,40,.94), rgba(10,11,20,.94));
-    border: 3px solid #ffd166; border-radius: 24px;
-    box-shadow: 0 30px 80px rgba(0,0,0,.75), 0 0 70px rgba(255,209,102,.5);
-    animation: fx-mystery-pop .55s cubic-bezier(.2,1.6,.4,1);
-    max-width: 90vw; line-height: 1.15;
-    font-family: "Montserrat", sans-serif;
-  }
-  @keyframes fx-mystery-pop{
-    0% { transform: scale(.3) rotate(-8deg); opacity: 0; }
-    100% { transform: scale(1) rotate(0); opacity: 1; }
-  }
 
   /* BSOD */
   .bsod{
@@ -788,7 +772,7 @@
   .bsod-footer-text .url{ text-decoration: underline; text-underline-offset: 2px; }
 
   /* ============================================================
-     UPGRADE TIME — iframe + transition
+     UPGRADE TIME — iframe
      ============================================================ */
   #upgradeTimeFrame{
     position: fixed; inset: 0;
@@ -809,28 +793,21 @@
     to  { opacity: 1; }
   }
 
-  body.upgrade-hiding #upgradeTimeFrame{
-    animation: ut-frame-fadeout .35s ease forwards;
-  }
-  @keyframes ut-frame-fadeout{
-    from{ opacity: 1; }
-    to  { opacity: 0; }
-  }
-
+  /* Стадия схлопывается вниз при появлении апгрейда */
   body.upgrade-showing .stage{
-    animation: ut-stage-collapse .55s cubic-bezier(.55,0,.75,1) forwards;
+    animation: ut-stage-collapse .55s cubic-bezier(.55,0,.75,1) forwards !important;
     pointer-events: none;
   }
   body.upgrade-showing .tg-badge{
-    animation: ut-collapse-right .55s cubic-bezier(.55,0,.75,1) forwards;
+    animation: ut-collapse-right .55s cubic-bezier(.55,0,.75,1) forwards !important;
     pointer-events: none;
   }
   body.upgrade-showing .open-settings{
-    animation: ut-collapse-left .55s cubic-bezier(.55,0,.75,1) forwards;
+    animation: ut-collapse-left .55s cubic-bezier(.55,0,.75,1) forwards !important;
     pointer-events: none;
   }
   body.upgrade-showing .broadcast-stack{
-    animation: ut-collapse-right .5s cubic-bezier(.55,0,.75,1) forwards;
+    animation: ut-collapse-right .5s cubic-bezier(.55,0,.75,1) forwards !important;
     pointer-events: none;
   }
   @keyframes ut-stage-collapse{
@@ -849,51 +826,70 @@
     100% { transform: translate(-52vw, 112vh) rotate(-38deg); opacity: 0; }
   }
 
-  body.upgrade-hiding .stage{
-    animation: ut-stage-rebuild .75s cubic-bezier(.2,1.1,.35,1) .42s both;
+  /* ============================================================
+     SITE ENTRANCE — появление сайта (при загрузке и после апгрейда)
+     ============================================================ */
+  body.site-entrance .wheel-wrap{
+    animation: site-block-slam .65s cubic-bezier(.2,1.05,.35,1) 0ms both;
+    will-change: transform, opacity;
   }
-  body.upgrade-hiding .tg-badge{
-    animation: ut-rebuild-right .75s cubic-bezier(.2,1.1,.35,1) .48s both;
+  body.site-entrance .result{
+    animation: site-block-slam .60s cubic-bezier(.2,1.05,.35,1) 80ms both;
   }
-  body.upgrade-hiding .open-settings{
-    animation: ut-rebuild-left .75s cubic-bezier(.2,1.1,.35,1) .48s both;
+  body.site-entrance .status{
+    animation: site-block-slam .55s cubic-bezier(.2,1.05,.35,1) 160ms both;
   }
-  body.upgrade-hiding .broadcast-stack{
-    animation: ut-rebuild-right .75s cubic-bezier(.2,1.1,.35,1) .48s both;
+  body.site-entrance .main-controls{
+    animation: site-block-slam .60s cubic-bezier(.2,1.05,.35,1) 240ms both;
   }
-  @keyframes ut-stage-rebuild{
-    0%   { transform: translateY(115vh) rotate(14deg) scale(.32); opacity: 0; filter: blur(6px); }
-    62%  { transform: translateY(-14px) rotate(1deg) scale(1.02); opacity: 1; filter: blur(0); }
-    82%  { transform: translateY(5px) rotate(-.5deg) scale(.997); opacity: 1; filter: blur(0); }
-    100% { transform: translateY(0) rotate(0) scale(1); opacity: 1; filter: blur(0); }
+  body.site-entrance .player{
+    animation: site-block-slam .60s cubic-bezier(.2,1.05,.35,1) 320ms both;
   }
-  @keyframes ut-rebuild-right{
-    0%   { transform: translate(52vw, 112vh) rotate(38deg); opacity: 0; }
-    62%  { transform: translate(-6px, -10px) rotate(-1.5deg); opacity: 1; }
-    82%  { transform: translate(3px, 3px) rotate(.5deg); opacity: 1; }
-    100% { transform: translate(0,0) rotate(0); opacity: 1; }
+  body.site-entrance .hint{
+    animation: site-block-slam .55s cubic-bezier(.2,1.05,.35,1) 400ms both;
   }
-  @keyframes ut-rebuild-left{
-    0%   { transform: translate(-52vw, 112vh) rotate(-38deg); opacity: 0; }
-    62%  { transform: translate(6px, -10px) rotate(1.5deg); opacity: 1; }
-    82%  { transform: translate(-3px, 3px) rotate(-.5deg); opacity: 1; }
-    100% { transform: translate(0,0) rotate(0); opacity: 1; }
+  body.site-entrance .tg-badge{
+    animation: site-right-slam .60s cubic-bezier(.2,1.05,.35,1) 100ms both;
+  }
+  body.site-entrance .open-settings{
+    animation: site-left-slam .60s cubic-bezier(.2,1.05,.35,1) 150ms both;
+  }
+  body.site-entrance .broadcast-stack{
+    animation: site-right-slam .55s cubic-bezier(.2,1.05,.35,1) 200ms both;
   }
 
-  body.upgrade-showing.upgrade-silent .stage,
-  body.upgrade-showing.upgrade-silent .tg-badge,
-  body.upgrade-showing.upgrade-silent .open-settings,
-  body.upgrade-showing.upgrade-silent .broadcast-stack,
-  body.upgrade-showing.upgrade-silent #upgradeTimeFrame,
-  body.upgrade-hiding.upgrade-silent #upgradeTimeFrame,
-  body.upgrade-hiding.upgrade-silent .stage,
-  body.upgrade-hiding.upgrade-silent .tg-badge,
-  body.upgrade-hiding.upgrade-silent .open-settings,
-  body.upgrade-hiding.upgrade-silent .broadcast-stack{
+  @keyframes site-block-slam{
+    0%   { opacity: 0; transform: translateY(-65vh) rotate(-6deg) scale(.65); filter: blur(5px); }
+    55%  { opacity: 1; transform: translateY(9px) rotate(1deg) scale(1.03); filter: blur(0); }
+    75%  { transform: translateY(-3px) rotate(-.3deg) scale(.998); }
+    100% { opacity: 1; transform: translateY(0) rotate(0) scale(1); filter: blur(0); }
+  }
+  @keyframes site-right-slam{
+    0%   { opacity: 0; transform: translate(60vw, -60vh) rotate(10deg) scale(.7); filter: blur(5px); }
+    55%  { opacity: 1; transform: translate(-8px, 4px) rotate(-1deg) scale(1.03); filter: blur(0); }
+    100% { opacity: 1; transform: translate(0,0) rotate(0) scale(1); filter: blur(0); }
+  }
+  @keyframes site-left-slam{
+    0%   { opacity: 0; transform: translate(-60vw, -60vh) rotate(-10deg) scale(.7); filter: blur(5px); }
+    55%  { opacity: 1; transform: translate(8px, 4px) rotate(1deg) scale(1.03); filter: blur(0); }
+    100% { opacity: 1; transform: translate(0,0) rotate(0) scale(1); filter: blur(0); }
+  }
+
+  /* Silent mode для site-entrance (если прикол включается без анимации) */
+  body.site-entrance.site-silent .wheel-wrap,
+  body.site-entrance.site-silent .result,
+  body.site-entrance.site-silent .status,
+  body.site-entrance.site-silent .main-controls,
+  body.site-entrance.site-silent .player,
+  body.site-entrance.site-silent .hint,
+  body.site-entrance.site-silent .tg-badge,
+  body.site-entrance.site-silent .open-settings,
+  body.site-entrance.site-silent .broadcast-stack{
     animation-duration: .001s !important;
     animation-delay: 0s !important;
   }
 
+  /* Вспышка */
   .ut-flash{
     position: fixed; inset: 0;
     z-index: 99994;
@@ -908,6 +904,7 @@
     100% { opacity: 0; }
   }
 
+  /* Осколки */
   .ut-shards{
     position: fixed; inset: 0;
     z-index: 99993;
@@ -2583,14 +2580,13 @@ window.addEventListener('message', e => {
     const frame = document.getElementById('upgradeTimeFrame');
     if (!animate){
       if (frame && frame.parentNode) frame.remove();
-      document.body.classList.remove('upgrade-showing', 'upgrade-hiding');
+      document.body.classList.remove('upgrade-showing', 'site-entrance');
       upgradeTimeVisible = false;
       return;
     }
     upgradeAnimating = true;
     ensureParentAudio();
     playDisassemble();
-    document.body.classList.add('upgrade-hiding');
     if (frame) { try { frame.contentWindow.postMessage({ type: 'upgrade-exit' }, '*'); } catch(e){} }
     setTimeout(() => {
       flashScreen();
@@ -2600,12 +2596,15 @@ window.addEventListener('message', e => {
       upgradeTimeVisible = false;
       document.body.classList.add('ut-shake');
       setTimeout(() => document.body.classList.remove('ut-shake'), 340);
-    }, 480);
-    setTimeout(() => { playReassemble(); }, 620);
+      document.body.classList.remove('upgrade-showing');
+      void document.body.offsetWidth;
+      document.body.classList.add('site-entrance');
+    }, 550);
+    setTimeout(() => { playReassemble(); }, 700);
     setTimeout(() => {
-      document.body.classList.remove('upgrade-hiding', 'upgrade-showing');
+      document.body.classList.remove('site-entrance');
       upgradeAnimating = false;
-    }, 1500);
+    }, 1550);
   }
 
   window.addEventListener('message', e => {
@@ -2626,11 +2625,8 @@ window.addEventListener('message', e => {
     bsod: { name: 'Синий экран', persistent: true, icon: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 14c.5-1.5 1.5-2 2-2M16 14c-.5-1.5-1.5-2-2-2M9 18h6"/></svg>' },
     upgradetime: { name: 'Время апгрейда', persistent: true, special: true, fullscreen: true, icon: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>' },
     confetti: { name: 'Конфетти', persistent: false, duration: 6000, icon: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.8 11.3 2 22l10.7-3.79"/></svg>' },
-    bubbles: { name: 'Пузыри', persistent: false, duration: 8000, icon: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="3"/><circle cx="16" cy="10" r="4"/><circle cx="15" cy="18" r="2"/></svg>' },
-    mystery: { name: 'Рандом', persistent: false, duration: 4000, icon: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>' }
+    bubbles: { name: 'Пузыри', persistent: false, duration: 8000, icon: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="3"/><circle cx="16" cy="10" r="4"/><circle cx="15" cy="18" r="2"/></svg>' }
   };
-
-  const MYSTERIES = ['Ты выиграл 1 000 000 ₽!','Срочно проверь телефон!','Колесо сломалось. Сорри.','Следующий победитель — ты!','Тебя взломали 😱','Позвони маме','За тобой следят 👀','Ты теперь легенда','Ключ от квартиры — под ковриком','Ты получил +100 к удаче'];
 
   const activePranks = new Set();
   let adminOpen = false;
@@ -2709,14 +2705,6 @@ window.addEventListener('message', e => {
     }
     document.body.appendChild(c);
   }
-  function showMystery(){
-    clearFx('mystery');
-    const c = document.createElement('div'); c.className = 'fx-mystery'; c.id = 'fx-mystery';
-    const t = document.createElement('div'); t.className = 'fx-mystery-text';
-    t.textContent = MYSTERIES[Math.floor(Math.random()*MYSTERIES.length)];
-    c.appendChild(t); document.body.appendChild(c);
-    requestAnimationFrame(() => c.classList.add('show'));
-  }
   function clearFx(id){ const el = document.getElementById('fx-' + id); if (el) el.remove(); }
 
   function applyPrank(id, on, silent){
@@ -2735,7 +2723,6 @@ window.addEventListener('message', e => {
 
     if (id === 'confetti'){ if (on) spawnConfetti(); else clearFx('confetti'); }
     if (id === 'bubbles'){ if (on) spawnBubbles(); else clearFx('bubbles'); }
-    if (id === 'mystery'){ if (on) showMystery(); else clearFx('mystery'); }
     if (id === 'bsod'){ if (on) startBsod(); else stopBsod(); }
     if (id === 'spinsite' && !on) stopSiteSpin();
 
@@ -2916,8 +2903,19 @@ window.addEventListener('message', e => {
       resetRound(); updatePlayButton(); updateRangeFill(seekBar); updateRangeFill(volumeBar);
       if (window.ResizeObserver){ new ResizeObserver(resize).observe(wrapEl); } else { window.addEventListener('resize', resize); }
       resize();
+
       const saved = loadPranks();
       saved.forEach(id => { applyPrank(id, true, true); });
+
+      // Если апгрейд НЕ активен — играем анимацию появления сайта
+      if (!saved.has('upgradetime')){
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            document.body.classList.add('site-entrance');
+            setTimeout(() => document.body.classList.remove('site-entrance'), 1600);
+          });
+        });
+      }
     }
   }
   init();
