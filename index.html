@@ -1154,112 +1154,122 @@
     display: block;
     will-change: transform, opacity;
     transform-origin: 50% 50%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
 
-  /* --- COLLAPSE основной сцены (при появлении прикола) --- */
+  /* ================================================================
+     ПОЯВЛЕНИЕ — стадия схлопывается вниз, iframe влетает сверху.
+     Обе анимации идут ОДНОВРЕМЕННО с t=0.
+     К моменту приземления iframe (~680ms) стадия уже улетела.
+     ================================================================ */
   body.upgrade-showing .stage{
-    animation: ut-stage-collapse .75s cubic-bezier(.55,0,.75,1) forwards;
+    animation: ut-stage-collapse .55s cubic-bezier(.55,0,.75,1) forwards;
     pointer-events: none;
+    will-change: transform, opacity, filter;
   }
   body.upgrade-showing .tg-badge{
-    animation: ut-collapse-right .7s cubic-bezier(.55,0,.75,1) .05s forwards;
+    animation: ut-collapse-right .55s cubic-bezier(.55,0,.75,1) forwards;
     pointer-events: none;
   }
   body.upgrade-showing .open-settings{
-    animation: ut-collapse-left .7s cubic-bezier(.55,0,.75,1) .1s forwards;
+    animation: ut-collapse-left .55s cubic-bezier(.55,0,.75,1) forwards;
     pointer-events: none;
   }
   body.upgrade-showing .broadcast-stack{
-    animation: ut-collapse-right .65s cubic-bezier(.55,0,.75,1) .08s forwards;
+    animation: ut-collapse-right .5s cubic-bezier(.55,0,.75,1) forwards;
     pointer-events: none;
   }
 
   @keyframes ut-stage-collapse{
-    0%   { transform: translateY(0) rotate(0) scale(1); opacity: 1; }
-    18%  { transform: translateY(-22px) rotate(-1.5deg) scale(1.025); opacity: 1; }
-    100% { transform: translateY(112vh) rotate(20deg) scale(.35); opacity: 0; }
+    0%   { transform: translateY(0) rotate(0) scale(1); opacity: 1; filter: blur(0); }
+    15%  { transform: translateY(-18px) rotate(-1.2deg) scale(1.03); opacity: 1; filter: blur(0); }
+    100% { transform: translateY(115vh) rotate(14deg) scale(.32); opacity: 0; filter: blur(6px); }
   }
   @keyframes ut-collapse-right{
     0%   { transform: translate(0,0) rotate(0); opacity: 1; }
-    20%  { transform: translate(-6px, -12px) rotate(-2deg); opacity: 1; }
-    100% { transform: translate(50vw, 112vh) rotate(38deg); opacity: 0; }
+    15%  { transform: translate(-6px, -14px) rotate(-2deg); opacity: 1; }
+    100% { transform: translate(52vw, 112vh) rotate(38deg); opacity: 0; }
   }
   @keyframes ut-collapse-left{
     0%   { transform: translate(0,0) rotate(0); opacity: 1; }
-    20%  { transform: translate(6px, -12px) rotate(2deg); opacity: 1; }
-    100% { transform: translate(-50vw, 112vh) rotate(-38deg); opacity: 0; }
+    15%  { transform: translate(6px, -14px) rotate(2deg); opacity: 1; }
+    100% { transform: translate(-52vw, 112vh) rotate(-38deg); opacity: 0; }
   }
 
-  /* --- SLAM IN (iframe прилетает сверху) --- */
+  /* iframe влетает сверху, приземляется с отскоком */
   body.upgrade-showing #upgradeTimeFrame{
-    animation: ut-iframe-slam .78s cubic-bezier(.16,1.15,.3,1) both;
+    animation: ut-iframe-slam .68s cubic-bezier(.18,1.05,.32,1) both;
+    will-change: transform, opacity;
   }
   @keyframes ut-iframe-slam{
-    0%   { transform: translateY(-115vh) rotate(-8deg) scale(.6); opacity: .3; }
-    55%  { transform: translateY(4vh) rotate(1.2deg) scale(1.03); opacity: 1; }
-    75%  { transform: translateY(-1vh) rotate(-.4deg) scale(.995); }
+    0%   { transform: translateY(-125vh) rotate(-6deg) scale(.65); opacity: 0; }
+    12%  { opacity: 1; }
+    45%  { transform: translateY(6vh) rotate(1.4deg) scale(1.045); opacity: 1; }
+    65%  { transform: translateY(-2vh) rotate(-.6deg) scale(.988); opacity: 1; }
+    82%  { transform: translateY(.6vh) rotate(.25deg) scale(1.005); }
     100% { transform: translateY(0) rotate(0) scale(1); opacity: 1; }
   }
 
-  /* --- FALL OUT (iframe падает при скрытии) --- */
+  /* ================================================================
+     ИСЧЕЗНОВЕНИЕ — iframe падает вниз, стадия возвращается снизу.
+     ================================================================ */
   body.upgrade-hiding #upgradeTimeFrame{
-    animation: ut-iframe-fall .58s cubic-bezier(.55,0,.75,1) forwards;
+    animation: ut-iframe-fall .5s cubic-bezier(.55,0,.75,1) forwards;
+    will-change: transform, opacity;
   }
   @keyframes ut-iframe-fall{
     0%   { transform: translateY(0) rotate(0) scale(1); opacity: 1; }
-    18%  { transform: translateY(-14px) rotate(2deg) scale(1.02); opacity: 1; }
-    100% { transform: translateY(112vh) rotate(24deg) scale(.35); opacity: 0; }
+    15%  { transform: translateY(-16px) rotate(2deg) scale(1.025); opacity: 1; }
+    100% { transform: translateY(115vh) rotate(22deg) scale(.32); opacity: 0; }
   }
 
-  /* --- REBUILD основной сцены (когда прикол убирают) --- */
+  /* Стадия возвращается снизу с bounce, начиная с задержкой .45s
+     (когда iframe уже уехал) */
   body.upgrade-hiding .stage{
-    animation: ut-stage-rebuild .85s cubic-bezier(.2,1.1,.35,1) .55s both;
+    animation: ut-stage-rebuild .75s cubic-bezier(.2,1.1,.35,1) .42s both;
   }
   body.upgrade-hiding .tg-badge{
-    animation: ut-rebuild-right .85s cubic-bezier(.2,1.1,.35,1) .6s both;
+    animation: ut-rebuild-right .75s cubic-bezier(.2,1.1,.35,1) .48s both;
   }
   body.upgrade-hiding .open-settings{
-    animation: ut-rebuild-left .85s cubic-bezier(.2,1.1,.35,1) .65s both;
+    animation: ut-rebuild-left .75s cubic-bezier(.2,1.1,.35,1) .48s both;
   }
   body.upgrade-hiding .broadcast-stack{
-    animation: ut-rebuild-right .85s cubic-bezier(.2,1.1,.35,1) .6s both;
+    animation: ut-rebuild-right .75s cubic-bezier(.2,1.1,.35,1) .48s both;
   }
   @keyframes ut-stage-rebuild{
-    0%   { transform: translateY(112vh) rotate(20deg) scale(.35); opacity: 0; }
-    62%  { transform: translateY(-14px) rotate(1deg) scale(1.02); opacity: 1; }
-    82%  { transform: translateY(4px) rotate(-.4deg) scale(.998); opacity: 1; }
-    100% { transform: translateY(0) rotate(0) scale(1); opacity: 1; }
+    0%   { transform: translateY(115vh) rotate(14deg) scale(.32); opacity: 0; filter: blur(6px); }
+    62%  { transform: translateY(-14px) rotate(1deg) scale(1.02); opacity: 1; filter: blur(0); }
+    82%  { transform: translateY(5px) rotate(-.5deg) scale(.997); opacity: 1; filter: blur(0); }
+    100% { transform: translateY(0) rotate(0) scale(1); opacity: 1; filter: blur(0); }
   }
   @keyframes ut-rebuild-right{
-    0%   { transform: translate(50vw, 112vh) rotate(38deg); opacity: 0; }
+    0%   { transform: translate(52vw, 112vh) rotate(38deg); opacity: 0; }
     62%  { transform: translate(-6px, -10px) rotate(-1.5deg); opacity: 1; }
-    82%  { transform: translate(2px, 3px) rotate(.5deg); opacity: 1; }
+    82%  { transform: translate(3px, 3px) rotate(.5deg); opacity: 1; }
     100% { transform: translate(0,0) rotate(0); opacity: 1; }
   }
   @keyframes ut-rebuild-left{
-    0%   { transform: translate(-50vw, 112vh) rotate(-38deg); opacity: 0; }
+    0%   { transform: translate(-52vw, 112vh) rotate(-38deg); opacity: 0; }
     62%  { transform: translate(6px, -10px) rotate(1.5deg); opacity: 1; }
-    82%  { transform: translate(-2px, 3px) rotate(-.5deg); opacity: 1; }
+    82%  { transform: translate(-3px, 3px) rotate(-.5deg); opacity: 1; }
     100% { transform: translate(0,0) rotate(0); opacity: 1; }
   }
 
-  /* --- Silent mode (без анимации, мгновенно в конечном состоянии) --- */
+  /* silent mode — без анимации */
   body.upgrade-showing.upgrade-silent .stage,
   body.upgrade-showing.upgrade-silent .tg-badge,
   body.upgrade-showing.upgrade-silent .open-settings,
-  body.upgrade-showing.upgrade-silent .broadcast-stack{
-    animation-duration: .001s;
-  }
-  body.upgrade-showing.upgrade-silent #upgradeTimeFrame{
-    animation-duration: .001s;
-  }
+  body.upgrade-showing.upgrade-silent .broadcast-stack,
+  body.upgrade-showing.upgrade-silent #upgradeTimeFrame,
   body.upgrade-hiding.upgrade-silent #upgradeTimeFrame,
   body.upgrade-hiding.upgrade-silent .stage,
   body.upgrade-hiding.upgrade-silent .tg-badge,
   body.upgrade-hiding.upgrade-silent .open-settings,
   body.upgrade-hiding.upgrade-silent .broadcast-stack{
-    animation-duration: .001s;
-    animation-delay: 0s;
+    animation-duration: .001s !important;
+    animation-delay: 0s !important;
   }
 
   /* --- Вспышка --- */
@@ -1271,27 +1281,49 @@
     pointer-events: none;
   }
   .ut-flash.flash{
-    animation: ut-flash-pop .45s ease-out;
+    animation: ut-flash-pop .42s ease-out;
   }
   @keyframes ut-flash-pop{
     0%   { opacity: 0; }
-    22%  { opacity: .88; }
+    18%  { opacity: .92; }
     100% { opacity: 0; }
   }
 
-  /* --- Тряска экрана при ударе --- */
-  body.ut-shake .stage,
-  body.ut-shake #upgradeTimeFrame{
-    animation-name: ut-shake-kf;
-    animation-duration: .38s;
-    animation-timing-function: ease-out;
+  /* --- Осколки от удара --- */
+  .ut-shards{
+    position: fixed; inset: 0;
+    z-index: 99993;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .ut-shard{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 10px;
+    height: 3px;
+    background: #ffffff;
+    border-radius: 1px;
+    box-shadow: 0 0 8px rgba(255,255,255,.9), 0 0 20px rgba(255,220,120,.6);
+    transform-origin: 50% 50%;
+    animation: ut-shard-fly .7s ease-out forwards;
+  }
+  @keyframes ut-shard-fly{
+    0%   { transform: translate(-50%, -50%) rotate(var(--ang)) translateX(0) scale(1); opacity: 1; }
+    100% { transform: translate(-50%, -50%) rotate(var(--ang)) translateX(var(--dist)) scale(.3); opacity: 0; }
+  }
+
+  /* --- Тряска iframe при приземлении --- */
+  body.ut-shake #upgradeTimeFrame,
+  body.ut-shake .stage{
+    animation: ut-shake-kf .32s ease-out;
   }
   @keyframes ut-shake-kf{
     0%,100% { transform: translate(0,0) }
-    15% { transform: translate(-7px, 4px) }
-    35% { transform: translate(6px, -5px) }
-    55% { transform: translate(-5px, 3px) }
-    75% { transform: translate(4px, -2px) }
+    15% { transform: translate(-6px, 4px) rotate(-.4deg) }
+    35% { transform: translate(5px, -5px) rotate(.4deg) }
+    55% { transform: translate(-4px, 3px) rotate(-.3deg) }
+    75% { transform: translate(3px, -2px) rotate(.2deg) }
   }
 
   @media (max-width:600px){
@@ -4100,7 +4132,7 @@ console.log('Space — крутить / B — турбо');
   });
 
   /* ============================================================
-     PARENT AUDIO (для эффектов перехода)
+     PARENT AUDIO — для эффектов перехода
      ============================================================ */
   const ParentAudioCtx = window.AudioContext || window.webkitAudioContext;
   let parentAudioCtx = null;
@@ -4112,7 +4144,7 @@ console.log('Space — крутить / B — турбо');
       try {
         parentAudioCtx = new ParentAudioCtx();
         parentMasterGain = parentAudioCtx.createGain();
-        parentMasterGain.gain.value = 0.65;
+        parentMasterGain.gain.value = 0.7;
         parentMasterGain.connect(parentAudioCtx.destination);
       } catch(e){ console.warn('parent audio init failed', e); }
     }
@@ -4133,7 +4165,7 @@ console.log('Space — крутить / B — турбо');
     return buf;
   }
 
-  // Звук разрушения: рокот + падающие обломки
+  // Звук разрушения: рокот + sub-bass drop + обломки
   function playCollapse(){
     if (!parentAudioCtx || !parentMasterGain) return;
     const t = parentAudioCtx.currentTime;
@@ -4142,35 +4174,30 @@ console.log('Space — крутить / B — турбо');
     const noise = parentAudioCtx.createBufferSource();
     noise.buffer = getParentNoise();
     noise.loop = true;
-
     const lp = parentAudioCtx.createBiquadFilter();
     lp.type = 'lowpass';
     lp.frequency.setValueAtTime(280, t);
     lp.frequency.exponentialRampToValueAtTime(55, t + dur);
     lp.Q.value = 6;
-
     const ng = parentAudioCtx.createGain();
     ng.gain.setValueAtTime(0, t);
-    ng.gain.linearRampToValueAtTime(0.42, t + 0.03);
-    ng.gain.linearRampToValueAtTime(0.35, t + dur * 0.65);
+    ng.gain.linearRampToValueAtTime(0.4, t + 0.03);
+    ng.gain.linearRampToValueAtTime(0.32, t + dur * 0.65);
     ng.gain.exponentialRampToValueAtTime(0.001, t + dur);
-
     noise.connect(lp); lp.connect(ng); ng.connect(parentMasterGain);
     noise.start(t); noise.stop(t + dur + 0.05);
 
-    // Sub bass drop
     const sub = parentAudioCtx.createOscillator();
     sub.type = 'sine';
     sub.frequency.setValueAtTime(115, t);
     sub.frequency.exponentialRampToValueAtTime(32, t + dur);
     const sg = parentAudioCtx.createGain();
     sg.gain.setValueAtTime(0, t);
-    sg.gain.linearRampToValueAtTime(0.6, t + 0.035);
+    sg.gain.linearRampToValueAtTime(0.55, t + 0.035);
     sg.gain.exponentialRampToValueAtTime(0.001, t + dur);
     sub.connect(sg); sg.connect(parentMasterGain);
     sub.start(t); sub.stop(t + dur + 0.05);
 
-    // Falling debris hits
     for (let i = 0; i < 9; i++){
       const dt = 0.12 + Math.random() * 0.6;
       const freq = 180 + Math.random() * 520;
@@ -4200,7 +4227,7 @@ console.log('Space — крутить / B — турбо');
     sub.frequency.exponentialRampToValueAtTime(22, t + dur);
     const sg = parentAudioCtx.createGain();
     sg.gain.setValueAtTime(0, t);
-    sg.gain.linearRampToValueAtTime(0.9, t + 0.008);
+    sg.gain.linearRampToValueAtTime(0.85, t + 0.008);
     sg.gain.exponentialRampToValueAtTime(0.001, t + dur);
     sub.connect(sg); sg.connect(parentMasterGain);
     sub.start(t); sub.stop(t + dur + 0.05);
@@ -4214,7 +4241,7 @@ console.log('Space — крутить / B — турбо');
     lp.Q.value = 3;
     const ng = parentAudioCtx.createGain();
     ng.gain.setValueAtTime(0, t);
-    ng.gain.linearRampToValueAtTime(0.42, t + 0.005);
+    ng.gain.linearRampToValueAtTime(0.4, t + 0.005);
     ng.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
     n.connect(lp); lp.connect(ng); ng.connect(parentMasterGain);
     n.start(t); n.stop(t + 0.45);
@@ -4224,17 +4251,17 @@ console.log('Space — крутить / B — турбо');
     o.frequency.value = 320;
     const og = parentAudioCtx.createGain();
     og.gain.setValueAtTime(0, t);
-    og.gain.linearRampToValueAtTime(0.08, t + 0.002);
+    og.gain.linearRampToValueAtTime(0.07, t + 0.002);
     og.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
     o.connect(og); og.connect(parentMasterGain);
     o.start(t); o.stop(t + 0.11);
   }
 
-  // Звук разрушения (короткий) для скрытия
+  // Разрушение (короткое) для скрытия
   function playDisassemble(){
     if (!parentAudioCtx || !parentMasterGain) return;
     const t = parentAudioCtx.currentTime;
-    const dur = 0.55;
+    const dur = 0.5;
 
     const n = parentAudioCtx.createBufferSource();
     n.buffer = getParentNoise();
@@ -4246,12 +4273,11 @@ console.log('Space — крутить / B — турбо');
     lp.Q.value = 4;
     const ng = parentAudioCtx.createGain();
     ng.gain.setValueAtTime(0, t);
-    ng.gain.linearRampToValueAtTime(0.32, t + 0.02);
+    ng.gain.linearRampToValueAtTime(0.3, t + 0.02);
     ng.gain.exponentialRampToValueAtTime(0.001, t + dur);
     n.connect(lp); lp.connect(ng); ng.connect(parentMasterGain);
     n.start(t); n.stop(t + dur + 0.05);
 
-    // Короткий треск — серия быстрых тиков
     for (let i = 0; i < 12; i++){
       const st = t + i * 0.03;
       const o = parentAudioCtx.createOscillator();
@@ -4268,7 +4294,7 @@ console.log('Space — крутить / B — турбо');
     }
   }
 
-  // Звук сборки: восходящий свист + колокольчики
+  // Сборка: восходящий свист + колокольчики
   function playReassemble(){
     if (!parentAudioCtx || !parentMasterGain) return;
     const t = parentAudioCtx.currentTime;
@@ -4284,13 +4310,12 @@ console.log('Space — крутить / B — турбо');
     bp.Q.value = 8;
     const ng = parentAudioCtx.createGain();
     ng.gain.setValueAtTime(0, t);
-    ng.gain.linearRampToValueAtTime(0.28, t + 0.04);
-    ng.gain.linearRampToValueAtTime(0.32, t + dur * 0.8);
+    ng.gain.linearRampToValueAtTime(0.26, t + 0.04);
+    ng.gain.linearRampToValueAtTime(0.3, t + dur * 0.8);
     ng.gain.exponentialRampToValueAtTime(0.001, t + dur);
     n.connect(bp); bp.connect(ng); ng.connect(parentMasterGain);
     n.start(t); n.stop(t + dur + 0.05);
 
-    // Колокольчики в конце
     [1400, 2100, 2800].forEach((freq, i) => {
       const st = t + dur * 0.65 + i * 0.06;
       const o = parentAudioCtx.createOscillator();
@@ -4298,14 +4323,13 @@ console.log('Space — крутить / B — турбо');
       o.frequency.value = freq;
       const g = parentAudioCtx.createGain();
       g.gain.setValueAtTime(0, st);
-      g.gain.linearRampToValueAtTime(0.11, st + 0.003);
+      g.gain.linearRampToValueAtTime(0.1, st + 0.003);
       g.gain.exponentialRampToValueAtTime(0.0001, st + 0.5);
       o.connect(g); g.connect(parentMasterGain);
       o.start(st); o.stop(st + 0.55);
     });
   }
 
-  // Вспышка — короткий высокий бип
   function playFlashSound(){
     if (!parentAudioCtx || !parentMasterGain) return;
     const t = parentAudioCtx.currentTime;
@@ -4315,7 +4339,7 @@ console.log('Space — крутить / B — турбо');
     o.frequency.exponentialRampToValueAtTime(1200, t + 0.09);
     const g = parentAudioCtx.createGain();
     g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(0.07, t + 0.002);
+    g.gain.linearRampToValueAtTime(0.06, t + 0.002);
     g.gain.exponentialRampToValueAtTime(0.0001, t + 0.11);
     o.connect(g); g.connect(parentMasterGain);
     o.start(t); o.stop(t + 0.12);
@@ -4326,7 +4350,35 @@ console.log('Space — крутить / B — турбо');
     flash.className = 'ut-flash flash';
     document.body.appendChild(flash);
     playFlashSound();
-    setTimeout(() => flash.remove(), 520);
+    setTimeout(() => flash.remove(), 500);
+  }
+
+  // Осколки от удара — маленькие светящиеся линии, разлетающиеся в стороны
+  function spawnShards(){
+    const container = document.createElement('div');
+    container.className = 'ut-shards';
+    for (let i = 0; i < 28; i++){
+      const sh = document.createElement('div');
+      sh.className = 'ut-shard';
+      const ang = (Math.random() * 360);
+      const dist = 200 + Math.random() * 700;
+      sh.style.setProperty('--ang', ang + 'deg');
+      sh.style.setProperty('--dist', dist + 'px');
+      sh.style.animationDelay = (Math.random() * 0.08) + 's';
+      sh.style.animationDuration = (0.5 + Math.random() * 0.35) + 's';
+      sh.style.width = (8 + Math.random() * 16) + 'px';
+      sh.style.height = (2 + Math.random() * 3) + 'px';
+      if (Math.random() < 0.4){
+        sh.style.background = '#ffd400';
+        sh.style.boxShadow = '0 0 10px rgba(255,212,0,.95), 0 0 24px rgba(255,180,60,.6)';
+      } else {
+        sh.style.background = '#ffffff';
+        sh.style.boxShadow = '0 0 10px rgba(255,255,255,.9), 0 0 24px rgba(180,220,255,.6)';
+      }
+      container.appendChild(sh);
+    }
+    document.body.appendChild(container);
+    setTimeout(() => container.remove(), 900);
   }
 
   /* ============================================================
@@ -4347,7 +4399,6 @@ console.log('Space — крутить / B — турбо');
     if (html.indexOf(anchor) !== -1){
       html = html.replace(anchor, 'const saved = ' + injectedJsString + ';');
     } else {
-      // Fallback — на случай если anchor не найден
       const fallback = '<scr' + 'ipt>try{localStorage.setItem("yanimp3grader_tracks_v3", ' + JSON.stringify(tracksJsonString) + ')}catch(e){}</scr' + 'ipt>';
       html = fallback + html;
     }
@@ -4364,49 +4415,51 @@ console.log('Space — крутить / B — турбо');
     return frame;
   }
 
+  /* ------- ПОЯВЛЕНИЕ ------- */
+  // Всё стартует одновременно: стадия разлетается, iframe влетает сверху.
+  // Вспышка, удар и тряска — точно в момент приземления iframe (~t=640ms).
   function showUpgradeTime(animate){
     if (animate === undefined) animate = true;
     if (upgradeTimeVisible || upgradeAnimating) return;
 
     if (!animate){
-      // Мгновенный показ (при загрузке страницы, если прикол уже был активен)
       document.body.classList.add('upgrade-silent');
       document.body.classList.add('upgrade-showing');
       createUpgradeFrame();
       upgradeTimeVisible = true;
-      setTimeout(() => document.body.classList.remove('upgrade-silent'), 100);
+      setTimeout(() => document.body.classList.remove('upgrade-silent'), 60);
       return;
     }
 
     upgradeAnimating = true;
     ensureParentAudio();
 
-    // 1. Звук разрушения
+    // t=0 — запускаем разрушение + создаём iframe
     playCollapse();
+    createUpgradeFrame();
+    upgradeTimeVisible = true;
 
-    // 2. Основная сцена разлетается
+    // даём браузеру отрисовать iframe до старта анимации
+    void document.body.offsetWidth;
     document.body.classList.add('upgrade-showing');
 
-    // 3. iframe влетает сверху и сносит всё
+    // t=640ms — момент приземления: вспышка, удар, осколки, тряска
     setTimeout(() => {
-      createUpgradeFrame();
-      upgradeTimeVisible = true;
+      flashScreen();
+      playImpact();
+      spawnShards();
+      document.body.classList.add('ut-shake');
+      setTimeout(() => document.body.classList.remove('ut-shake'), 340);
+    }, 640);
 
-      // 4. Вспышка + удар + тряска
-      setTimeout(() => {
-        flashScreen();
-        playImpact();
-        document.body.classList.add('ut-shake');
-        setTimeout(() => document.body.classList.remove('ut-shake'), 400);
-      }, 380);
-    }, 420);
-
-    // 5. Финализация
     setTimeout(() => {
       upgradeAnimating = false;
     }, 1500);
   }
 
+  /* ------- ИСЧЕЗНОВЕНИЕ ------- */
+  // iframe падает вниз, стадия снизу въезжает обратно.
+  // Вспышка + удар — в момент падения (t=480ms).
   function hideUpgradeTime(animate){
     if (animate === undefined) animate = true;
     if (upgradeAnimating) return;
@@ -4416,8 +4469,7 @@ console.log('Space — крутить / B — турбо');
 
     if (!animate){
       if (frame && frame.parentNode) frame.remove();
-      document.body.classList.remove('upgrade-showing');
-      document.body.classList.remove('upgrade-hiding');
+      document.body.classList.remove('upgrade-showing', 'upgrade-hiding');
       upgradeTimeVisible = false;
       return;
     }
@@ -4425,36 +4477,32 @@ console.log('Space — крутить / B — турбо');
     upgradeAnimating = true;
     ensureParentAudio();
 
-    // 1. Звук разрушения апгрейда
     playDisassemble();
-
-    // 2. Всё падает вниз
     document.body.classList.add('upgrade-hiding');
 
-    // 3. Удар + вспышка + удаляем iframe
+    // t=480ms — iframe упал: вспышка + удар + удаляем
     setTimeout(() => {
       flashScreen();
       playImpact();
+      spawnShards();
       if (frame && frame.parentNode) frame.remove();
       upgradeTimeVisible = false;
       document.body.classList.add('ut-shake');
-      setTimeout(() => document.body.classList.remove('ut-shake'), 400);
-    }, 550);
+      setTimeout(() => document.body.classList.remove('ut-shake'), 340);
+    }, 480);
 
-    // 4. Звук сборки колеса
+    // t=620ms — начинается звук сборки, синхронно со стартом rebuild
     setTimeout(() => {
       playReassemble();
-    }, 700);
+    }, 620);
 
-    // 5. Финализация
     setTimeout(() => {
-      document.body.classList.remove('upgrade-hiding');
-      document.body.classList.remove('upgrade-showing');
+      document.body.classList.remove('upgrade-hiding', 'upgrade-showing');
       upgradeAnimating = false;
-    }, 1600);
+    }, 1500);
   }
 
-  // Мост из iframe: J+C открывает админку родителя
+  // Мост из iframe
   window.addEventListener('message', e => {
     if (e.data && e.data.type === 'admin-shortcut') {
       toggleAdmin();
@@ -4743,6 +4791,9 @@ console.log('Space — крутить / B — турбо');
   }
 
   function togglePrank(id){
+    // Блокируем клики во время анимации перехода
+    if (id === 'upgradetime' && upgradeAnimating) return;
+
     const on = !activePranks.has(id);
     applyPrank(id, on, false);
     broadcast({ type: 'prank', id, on });
@@ -5061,7 +5112,6 @@ console.log('Space — крутить / B — турбо');
 
       const saved = loadPranks();
       saved.forEach(id => {
-        // При загрузке — без анимации (silent), чтобы не сюрпризить пользователя
         applyPrank(id, true, true);
       });
     }
