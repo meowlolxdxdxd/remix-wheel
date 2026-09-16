@@ -1163,7 +1163,7 @@
 </div>
 
 <!-- Chroma key video -->
-<video id="chromaVideo" playsinline loop muted preload="auto" crossorigin="anonymous"></video>
+<video id="chromaVideo" playsinline loop preload="auto" crossorigin="anonymous"></video>
 <canvas id="chromaCanvas"></canvas>
 
 <template id="upgradeTimeTemplate">
@@ -2576,9 +2576,10 @@ window.addEventListener('message', e => {
       -1, -1, 1, -1, -1, 1,
       -1, 1, 1, -1, 1, 1
     ]);
+    // 180°: обе координаты инвертированы.
     const texCoords = new Float32Array([
-      0, 1, 1, 1, 0, 0,
-      0, 0, 1, 1, 1, 0
+      1, 0, 0, 0, 1, 1,
+      1, 1, 0, 0, 0, 1
     ]);
 
     const posBuf = gl.createBuffer();
@@ -2627,7 +2628,7 @@ window.addEventListener('message', e => {
 
     const ww = window.innerWidth;
     const wh = window.innerHeight;
-    const scale = Math.min(ww / vw, wh / vh);
+    const scale = Math.min(ww / vw, wh / vh) * 0.82;
     const cw = vw * scale;
     const ch = vh * scale;
 
@@ -2658,6 +2659,8 @@ window.addEventListener('message', e => {
       layoutChromaCanvas();
     }
 
+    // Видео показываем перевёрнутым на 180°, но звук берём напрямую из <video>.
+    // CSS transform не влияет на WebGL-кадр, поэтому переворачиваем UV в шейдере.
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, chromaTexture);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, chromaVideoEl);
@@ -2678,12 +2681,14 @@ window.addEventListener('message', e => {
     if (chromaFadeTimeout){ clearTimeout(chromaFadeTimeout); chromaFadeTimeout = null; }
     chromaCanvasEl.classList.remove('visible');
 
-    // Play video
+    // Play video вместе со звуком. Громкость чуть ниже максимума.
+    chromaVideoEl.muted = false;
+    chromaVideoEl.volume = 0.8;
     chromaVideoEl.currentTime = 0;
     const playPromise = chromaVideoEl.play();
     if (playPromise && playPromise.catch){
       playPromise.catch(err => {
-        console.warn('video play failed:', err);
+        console.warn('video play failed (браузер мог заблокировать автозвук):', err);
       });
     }
 
@@ -2729,6 +2734,19 @@ window.addEventListener('message', e => {
   window.addEventListener('resize', () => {
     if (chromaActive) layoutChromaCanvas();
   });
+
+  // Браузеры часто блокируют звук без первого действия пользователя.
+  // После любого клика/касания пробуем разблокировать аудио видео.
+  const unlockVideoAudio = () => {
+    if (!chromaVideoEl) return;
+    chromaVideoEl.muted = false;
+    chromaVideoEl.volume = 0.8;
+    if (chromaActive && chromaVideoEl.paused) {
+      chromaVideoEl.play().catch(() => {});
+    }
+  };
+  document.addEventListener('pointerdown', unlockVideoAudio, { passive: true });
+  document.addEventListener('keydown', unlockVideoAudio, { passive: true });
 
   // Инициализация src видео
   chromaVideoEl.src = VIDEO_SRC;
