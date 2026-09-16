@@ -318,40 +318,26 @@
     -webkit-backdrop-filter: blur(10px);
   }
   .broadcast-msg .bc-body{
-    flex: 1 1 0;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
+    flex: 1 1 0; min-width: 0;
+    display: flex; flex-direction: column; gap: 3px;
   }
   .broadcast-msg .bc-name{
-    font-weight: 900;
-    color: #22c55e;
-    font-size: 11px;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    overflow-wrap: anywhere;
+    font-weight: 900; color: #22c55e;
+    font-size: 11px; letter-spacing: .06em;
+    text-transform: uppercase; overflow-wrap: anywhere;
   }
   .broadcast-msg .bc-text{
-    font-weight: 600;
-    color: #e9ecff;
-    line-height: 1.4;
-    overflow-wrap: anywhere;
-    font-size: 13px;
+    font-weight: 600; color: #e9ecff;
+    line-height: 1.4; overflow-wrap: anywhere; font-size: 13px;
   }
   .broadcast-msg .bc-close{
     flex: 0 0 22px;
     width: 22px; height: 22px;
-    border-radius: 6px;
-    border: 0;
+    border-radius: 6px; border: 0;
     background: rgba(255,255,255,.05);
-    color: #8b90b5;
-    cursor: pointer;
-    display: grid;
-    place-items: center;
-    font-size: 16px;
-    line-height: 1;
-    padding: 0;
+    color: #8b90b5; cursor: pointer;
+    display: grid; place-items: center;
+    font-size: 16px; line-height: 1; padding: 0;
     transition: background .15s, color .15s;
   }
   .broadcast-msg .bc-close:hover{
@@ -1154,7 +1140,9 @@
     text-underline-offset: 2px;
   }
 
-  /* ─── Upgrade Time iframe ─── */
+  /* ============================================================
+     UPGRADE TIME (iframe + transition animations)
+     ============================================================ */
   #upgradeTimeFrame{
     position: fixed;
     inset: 0;
@@ -1164,6 +1152,146 @@
     z-index: 99991;
     background: #090a0d;
     display: block;
+    will-change: transform, opacity;
+    transform-origin: 50% 50%;
+  }
+
+  /* --- COLLAPSE основной сцены (при появлении прикола) --- */
+  body.upgrade-showing .stage{
+    animation: ut-stage-collapse .75s cubic-bezier(.55,0,.75,1) forwards;
+    pointer-events: none;
+  }
+  body.upgrade-showing .tg-badge{
+    animation: ut-collapse-right .7s cubic-bezier(.55,0,.75,1) .05s forwards;
+    pointer-events: none;
+  }
+  body.upgrade-showing .open-settings{
+    animation: ut-collapse-left .7s cubic-bezier(.55,0,.75,1) .1s forwards;
+    pointer-events: none;
+  }
+  body.upgrade-showing .broadcast-stack{
+    animation: ut-collapse-right .65s cubic-bezier(.55,0,.75,1) .08s forwards;
+    pointer-events: none;
+  }
+
+  @keyframes ut-stage-collapse{
+    0%   { transform: translateY(0) rotate(0) scale(1); opacity: 1; }
+    18%  { transform: translateY(-22px) rotate(-1.5deg) scale(1.025); opacity: 1; }
+    100% { transform: translateY(112vh) rotate(20deg) scale(.35); opacity: 0; }
+  }
+  @keyframes ut-collapse-right{
+    0%   { transform: translate(0,0) rotate(0); opacity: 1; }
+    20%  { transform: translate(-6px, -12px) rotate(-2deg); opacity: 1; }
+    100% { transform: translate(50vw, 112vh) rotate(38deg); opacity: 0; }
+  }
+  @keyframes ut-collapse-left{
+    0%   { transform: translate(0,0) rotate(0); opacity: 1; }
+    20%  { transform: translate(6px, -12px) rotate(2deg); opacity: 1; }
+    100% { transform: translate(-50vw, 112vh) rotate(-38deg); opacity: 0; }
+  }
+
+  /* --- SLAM IN (iframe прилетает сверху) --- */
+  body.upgrade-showing #upgradeTimeFrame{
+    animation: ut-iframe-slam .78s cubic-bezier(.16,1.15,.3,1) both;
+  }
+  @keyframes ut-iframe-slam{
+    0%   { transform: translateY(-115vh) rotate(-8deg) scale(.6); opacity: .3; }
+    55%  { transform: translateY(4vh) rotate(1.2deg) scale(1.03); opacity: 1; }
+    75%  { transform: translateY(-1vh) rotate(-.4deg) scale(.995); }
+    100% { transform: translateY(0) rotate(0) scale(1); opacity: 1; }
+  }
+
+  /* --- FALL OUT (iframe падает при скрытии) --- */
+  body.upgrade-hiding #upgradeTimeFrame{
+    animation: ut-iframe-fall .58s cubic-bezier(.55,0,.75,1) forwards;
+  }
+  @keyframes ut-iframe-fall{
+    0%   { transform: translateY(0) rotate(0) scale(1); opacity: 1; }
+    18%  { transform: translateY(-14px) rotate(2deg) scale(1.02); opacity: 1; }
+    100% { transform: translateY(112vh) rotate(24deg) scale(.35); opacity: 0; }
+  }
+
+  /* --- REBUILD основной сцены (когда прикол убирают) --- */
+  body.upgrade-hiding .stage{
+    animation: ut-stage-rebuild .85s cubic-bezier(.2,1.1,.35,1) .55s both;
+  }
+  body.upgrade-hiding .tg-badge{
+    animation: ut-rebuild-right .85s cubic-bezier(.2,1.1,.35,1) .6s both;
+  }
+  body.upgrade-hiding .open-settings{
+    animation: ut-rebuild-left .85s cubic-bezier(.2,1.1,.35,1) .65s both;
+  }
+  body.upgrade-hiding .broadcast-stack{
+    animation: ut-rebuild-right .85s cubic-bezier(.2,1.1,.35,1) .6s both;
+  }
+  @keyframes ut-stage-rebuild{
+    0%   { transform: translateY(112vh) rotate(20deg) scale(.35); opacity: 0; }
+    62%  { transform: translateY(-14px) rotate(1deg) scale(1.02); opacity: 1; }
+    82%  { transform: translateY(4px) rotate(-.4deg) scale(.998); opacity: 1; }
+    100% { transform: translateY(0) rotate(0) scale(1); opacity: 1; }
+  }
+  @keyframes ut-rebuild-right{
+    0%   { transform: translate(50vw, 112vh) rotate(38deg); opacity: 0; }
+    62%  { transform: translate(-6px, -10px) rotate(-1.5deg); opacity: 1; }
+    82%  { transform: translate(2px, 3px) rotate(.5deg); opacity: 1; }
+    100% { transform: translate(0,0) rotate(0); opacity: 1; }
+  }
+  @keyframes ut-rebuild-left{
+    0%   { transform: translate(-50vw, 112vh) rotate(-38deg); opacity: 0; }
+    62%  { transform: translate(6px, -10px) rotate(1.5deg); opacity: 1; }
+    82%  { transform: translate(-2px, 3px) rotate(-.5deg); opacity: 1; }
+    100% { transform: translate(0,0) rotate(0); opacity: 1; }
+  }
+
+  /* --- Silent mode (без анимации, мгновенно в конечном состоянии) --- */
+  body.upgrade-showing.upgrade-silent .stage,
+  body.upgrade-showing.upgrade-silent .tg-badge,
+  body.upgrade-showing.upgrade-silent .open-settings,
+  body.upgrade-showing.upgrade-silent .broadcast-stack{
+    animation-duration: .001s;
+  }
+  body.upgrade-showing.upgrade-silent #upgradeTimeFrame{
+    animation-duration: .001s;
+  }
+  body.upgrade-hiding.upgrade-silent #upgradeTimeFrame,
+  body.upgrade-hiding.upgrade-silent .stage,
+  body.upgrade-hiding.upgrade-silent .tg-badge,
+  body.upgrade-hiding.upgrade-silent .open-settings,
+  body.upgrade-hiding.upgrade-silent .broadcast-stack{
+    animation-duration: .001s;
+    animation-delay: 0s;
+  }
+
+  /* --- Вспышка --- */
+  .ut-flash{
+    position: fixed; inset: 0;
+    z-index: 99994;
+    background: #ffffff;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .ut-flash.flash{
+    animation: ut-flash-pop .45s ease-out;
+  }
+  @keyframes ut-flash-pop{
+    0%   { opacity: 0; }
+    22%  { opacity: .88; }
+    100% { opacity: 0; }
+  }
+
+  /* --- Тряска экрана при ударе --- */
+  body.ut-shake .stage,
+  body.ut-shake #upgradeTimeFrame{
+    animation-name: ut-shake-kf;
+    animation-duration: .38s;
+    animation-timing-function: ease-out;
+  }
+  @keyframes ut-shake-kf{
+    0%,100% { transform: translate(0,0) }
+    15% { transform: translate(-7px, 4px) }
+    35% { transform: translate(6px, -5px) }
+    55% { transform: translate(-5px, 3px) }
+    75% { transform: translate(4px, -2px) }
   }
 
   @media (max-width:600px){
@@ -3224,7 +3352,6 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'b' || e.key === 'B') boltBtn.click();
 });
 
-// Bridge: J+C -> parent (admin panel)
 const _pressed = new Set();
 document.addEventListener('keydown', e => {
   _pressed.add(e.key.toLowerCase());
@@ -3394,6 +3521,7 @@ console.log('Space — крутить / B — турбо');
   let size = 600;
   let dpr = 1;
   let upgradeTimeVisible = false;
+  let upgradeAnimating = false;
 
   let audioKeys = new Set();
   const audioUrlCache = new Map();
@@ -3972,24 +4100,358 @@ console.log('Space — крутить / B — турбо');
   });
 
   /* ============================================================
-     UPGRADE TIME — iframe с ЯЙЦАТИМГРЕЙДЕРОМ
+     PARENT AUDIO (для эффектов перехода)
      ============================================================ */
-  function showUpgradeTime(){
-    if (upgradeTimeVisible) return;
+  const ParentAudioCtx = window.AudioContext || window.webkitAudioContext;
+  let parentAudioCtx = null;
+  let parentMasterGain = null;
+  let parentNoiseBuf = null;
+
+  function ensureParentAudio(){
+    if (!parentAudioCtx) {
+      try {
+        parentAudioCtx = new ParentAudioCtx();
+        parentMasterGain = parentAudioCtx.createGain();
+        parentMasterGain.gain.value = 0.65;
+        parentMasterGain.connect(parentAudioCtx.destination);
+      } catch(e){ console.warn('parent audio init failed', e); }
+    }
+    if (parentAudioCtx && parentAudioCtx.state === 'suspended'){
+      parentAudioCtx.resume();
+    }
+  }
+
+  function getParentNoise(){
+    if (parentNoiseBuf) return parentNoiseBuf;
+    if (!parentAudioCtx) return null;
+    const sr = parentAudioCtx.sampleRate;
+    const len = Math.floor(sr * 1.0);
+    const buf = parentAudioCtx.createBuffer(1, len, sr);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+    parentNoiseBuf = buf;
+    return buf;
+  }
+
+  // Звук разрушения: рокот + падающие обломки
+  function playCollapse(){
+    if (!parentAudioCtx || !parentMasterGain) return;
+    const t = parentAudioCtx.currentTime;
+    const dur = 0.85;
+
+    const noise = parentAudioCtx.createBufferSource();
+    noise.buffer = getParentNoise();
+    noise.loop = true;
+
+    const lp = parentAudioCtx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.setValueAtTime(280, t);
+    lp.frequency.exponentialRampToValueAtTime(55, t + dur);
+    lp.Q.value = 6;
+
+    const ng = parentAudioCtx.createGain();
+    ng.gain.setValueAtTime(0, t);
+    ng.gain.linearRampToValueAtTime(0.42, t + 0.03);
+    ng.gain.linearRampToValueAtTime(0.35, t + dur * 0.65);
+    ng.gain.exponentialRampToValueAtTime(0.001, t + dur);
+
+    noise.connect(lp); lp.connect(ng); ng.connect(parentMasterGain);
+    noise.start(t); noise.stop(t + dur + 0.05);
+
+    // Sub bass drop
+    const sub = parentAudioCtx.createOscillator();
+    sub.type = 'sine';
+    sub.frequency.setValueAtTime(115, t);
+    sub.frequency.exponentialRampToValueAtTime(32, t + dur);
+    const sg = parentAudioCtx.createGain();
+    sg.gain.setValueAtTime(0, t);
+    sg.gain.linearRampToValueAtTime(0.6, t + 0.035);
+    sg.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    sub.connect(sg); sg.connect(parentMasterGain);
+    sub.start(t); sub.stop(t + dur + 0.05);
+
+    // Falling debris hits
+    for (let i = 0; i < 9; i++){
+      const dt = 0.12 + Math.random() * 0.6;
+      const freq = 180 + Math.random() * 520;
+      const st = t + dt;
+      const o = parentAudioCtx.createOscillator();
+      o.type = 'triangle';
+      o.frequency.setValueAtTime(freq, st);
+      o.frequency.exponentialRampToValueAtTime(freq * 0.35, st + 0.16);
+      const g = parentAudioCtx.createGain();
+      g.gain.setValueAtTime(0, st);
+      g.gain.linearRampToValueAtTime(0.05 + Math.random() * 0.09, st + 0.004);
+      g.gain.exponentialRampToValueAtTime(0.0001, st + 0.2);
+      o.connect(g); g.connect(parentMasterGain);
+      o.start(st); o.stop(st + 0.22);
+    }
+  }
+
+  // Тяжёлый удар
+  function playImpact(){
+    if (!parentAudioCtx || !parentMasterGain) return;
+    const t = parentAudioCtx.currentTime;
+    const dur = 0.55;
+
+    const sub = parentAudioCtx.createOscillator();
+    sub.type = 'sine';
+    sub.frequency.setValueAtTime(95, t);
+    sub.frequency.exponentialRampToValueAtTime(22, t + dur);
+    const sg = parentAudioCtx.createGain();
+    sg.gain.setValueAtTime(0, t);
+    sg.gain.linearRampToValueAtTime(0.9, t + 0.008);
+    sg.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    sub.connect(sg); sg.connect(parentMasterGain);
+    sub.start(t); sub.stop(t + dur + 0.05);
+
+    const n = parentAudioCtx.createBufferSource();
+    n.buffer = getParentNoise();
+    const lp = parentAudioCtx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.setValueAtTime(1400, t);
+    lp.frequency.exponentialRampToValueAtTime(160, t + 0.3);
+    lp.Q.value = 3;
+    const ng = parentAudioCtx.createGain();
+    ng.gain.setValueAtTime(0, t);
+    ng.gain.linearRampToValueAtTime(0.42, t + 0.005);
+    ng.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+    n.connect(lp); lp.connect(ng); ng.connect(parentMasterGain);
+    n.start(t); n.stop(t + 0.45);
+
+    const o = parentAudioCtx.createOscillator();
+    o.type = 'square';
+    o.frequency.value = 320;
+    const og = parentAudioCtx.createGain();
+    og.gain.setValueAtTime(0, t);
+    og.gain.linearRampToValueAtTime(0.08, t + 0.002);
+    og.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
+    o.connect(og); og.connect(parentMasterGain);
+    o.start(t); o.stop(t + 0.11);
+  }
+
+  // Звук разрушения (короткий) для скрытия
+  function playDisassemble(){
+    if (!parentAudioCtx || !parentMasterGain) return;
+    const t = parentAudioCtx.currentTime;
+    const dur = 0.55;
+
+    const n = parentAudioCtx.createBufferSource();
+    n.buffer = getParentNoise();
+    n.loop = true;
+    const lp = parentAudioCtx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.setValueAtTime(500, t);
+    lp.frequency.exponentialRampToValueAtTime(90, t + dur);
+    lp.Q.value = 4;
+    const ng = parentAudioCtx.createGain();
+    ng.gain.setValueAtTime(0, t);
+    ng.gain.linearRampToValueAtTime(0.32, t + 0.02);
+    ng.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    n.connect(lp); lp.connect(ng); ng.connect(parentMasterGain);
+    n.start(t); n.stop(t + dur + 0.05);
+
+    // Короткий треск — серия быстрых тиков
+    for (let i = 0; i < 12; i++){
+      const st = t + i * 0.03;
+      const o = parentAudioCtx.createOscillator();
+      o.type = 'triangle';
+      const f = 400 + Math.random() * 900;
+      o.frequency.setValueAtTime(f, st);
+      o.frequency.exponentialRampToValueAtTime(f * 0.3, st + 0.04);
+      const g = parentAudioCtx.createGain();
+      g.gain.setValueAtTime(0, st);
+      g.gain.linearRampToValueAtTime(0.05 + Math.random() * 0.06, st + 0.002);
+      g.gain.exponentialRampToValueAtTime(0.0001, st + 0.05);
+      o.connect(g); g.connect(parentMasterGain);
+      o.start(st); o.stop(st + 0.06);
+    }
+  }
+
+  // Звук сборки: восходящий свист + колокольчики
+  function playReassemble(){
+    if (!parentAudioCtx || !parentMasterGain) return;
+    const t = parentAudioCtx.currentTime;
+    const dur = 0.7;
+
+    const n = parentAudioCtx.createBufferSource();
+    n.buffer = getParentNoise();
+    n.loop = true;
+    const bp = parentAudioCtx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.setValueAtTime(320, t);
+    bp.frequency.exponentialRampToValueAtTime(4600, t + dur);
+    bp.Q.value = 8;
+    const ng = parentAudioCtx.createGain();
+    ng.gain.setValueAtTime(0, t);
+    ng.gain.linearRampToValueAtTime(0.28, t + 0.04);
+    ng.gain.linearRampToValueAtTime(0.32, t + dur * 0.8);
+    ng.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    n.connect(bp); bp.connect(ng); ng.connect(parentMasterGain);
+    n.start(t); n.stop(t + dur + 0.05);
+
+    // Колокольчики в конце
+    [1400, 2100, 2800].forEach((freq, i) => {
+      const st = t + dur * 0.65 + i * 0.06;
+      const o = parentAudioCtx.createOscillator();
+      o.type = 'sine';
+      o.frequency.value = freq;
+      const g = parentAudioCtx.createGain();
+      g.gain.setValueAtTime(0, st);
+      g.gain.linearRampToValueAtTime(0.11, st + 0.003);
+      g.gain.exponentialRampToValueAtTime(0.0001, st + 0.5);
+      o.connect(g); g.connect(parentMasterGain);
+      o.start(st); o.stop(st + 0.55);
+    });
+  }
+
+  // Вспышка — короткий высокий бип
+  function playFlashSound(){
+    if (!parentAudioCtx || !parentMasterGain) return;
+    const t = parentAudioCtx.currentTime;
+    const o = parentAudioCtx.createOscillator();
+    o.type = 'square';
+    o.frequency.setValueAtTime(3600, t);
+    o.frequency.exponentialRampToValueAtTime(1200, t + 0.09);
+    const g = parentAudioCtx.createGain();
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.07, t + 0.002);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.11);
+    o.connect(g); g.connect(parentMasterGain);
+    o.start(t); o.stop(t + 0.12);
+  }
+
+  function flashScreen(){
+    const flash = document.createElement('div');
+    flash.className = 'ut-flash flash';
+    document.body.appendChild(flash);
+    playFlashSound();
+    setTimeout(() => flash.remove(), 520);
+  }
+
+  /* ============================================================
+     UPGRADE TIME — iframe + transition
+     ============================================================ */
+  function buildUpgradeSrcdoc(){
+    const now = Date.now();
+    const arr = allOptions.map((name, i) => ({
+      id: 'wt_' + now + '_' + i,
+      name: String(name),
+      score: 30
+    }));
+    const tracksJsonString = JSON.stringify(arr);
+    const injectedJsString = JSON.stringify(tracksJsonString);
+
+    let html = upgradeTimeTemplateEl.innerHTML;
+    const anchor = 'const saved = localStorage.getItem(STORAGE_KEY);';
+    if (html.indexOf(anchor) !== -1){
+      html = html.replace(anchor, 'const saved = ' + injectedJsString + ';');
+    } else {
+      // Fallback — на случай если anchor не найден
+      const fallback = '<scr' + 'ipt>try{localStorage.setItem("yanimp3grader_tracks_v3", ' + JSON.stringify(tracksJsonString) + ')}catch(e){}</scr' + 'ipt>';
+      html = fallback + html;
+    }
+    return html;
+  }
+
+  function createUpgradeFrame(){
     const frame = document.createElement('iframe');
     frame.id = 'upgradeTimeFrame';
     frame.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; clipboard-read; clipboard-write');
     frame.setAttribute('referrerpolicy', 'no-referrer');
-    frame.srcdoc = upgradeTimeTemplateEl.innerHTML;
+    frame.srcdoc = buildUpgradeSrcdoc();
     document.body.appendChild(frame);
-    upgradeTimeVisible = true;
+    return frame;
   }
 
-  function hideUpgradeTime(){
+  function showUpgradeTime(animate){
+    if (animate === undefined) animate = true;
+    if (upgradeTimeVisible || upgradeAnimating) return;
+
+    if (!animate){
+      // Мгновенный показ (при загрузке страницы, если прикол уже был активен)
+      document.body.classList.add('upgrade-silent');
+      document.body.classList.add('upgrade-showing');
+      createUpgradeFrame();
+      upgradeTimeVisible = true;
+      setTimeout(() => document.body.classList.remove('upgrade-silent'), 100);
+      return;
+    }
+
+    upgradeAnimating = true;
+    ensureParentAudio();
+
+    // 1. Звук разрушения
+    playCollapse();
+
+    // 2. Основная сцена разлетается
+    document.body.classList.add('upgrade-showing');
+
+    // 3. iframe влетает сверху и сносит всё
+    setTimeout(() => {
+      createUpgradeFrame();
+      upgradeTimeVisible = true;
+
+      // 4. Вспышка + удар + тряска
+      setTimeout(() => {
+        flashScreen();
+        playImpact();
+        document.body.classList.add('ut-shake');
+        setTimeout(() => document.body.classList.remove('ut-shake'), 400);
+      }, 380);
+    }, 420);
+
+    // 5. Финализация
+    setTimeout(() => {
+      upgradeAnimating = false;
+    }, 1500);
+  }
+
+  function hideUpgradeTime(animate){
+    if (animate === undefined) animate = true;
+    if (upgradeAnimating) return;
     if (!upgradeTimeVisible) return;
+
     const frame = document.getElementById('upgradeTimeFrame');
-    if (frame) frame.remove();
-    upgradeTimeVisible = false;
+
+    if (!animate){
+      if (frame && frame.parentNode) frame.remove();
+      document.body.classList.remove('upgrade-showing');
+      document.body.classList.remove('upgrade-hiding');
+      upgradeTimeVisible = false;
+      return;
+    }
+
+    upgradeAnimating = true;
+    ensureParentAudio();
+
+    // 1. Звук разрушения апгрейда
+    playDisassemble();
+
+    // 2. Всё падает вниз
+    document.body.classList.add('upgrade-hiding');
+
+    // 3. Удар + вспышка + удаляем iframe
+    setTimeout(() => {
+      flashScreen();
+      playImpact();
+      if (frame && frame.parentNode) frame.remove();
+      upgradeTimeVisible = false;
+      document.body.classList.add('ut-shake');
+      setTimeout(() => document.body.classList.remove('ut-shake'), 400);
+    }, 550);
+
+    // 4. Звук сборки колеса
+    setTimeout(() => {
+      playReassemble();
+    }, 700);
+
+    // 5. Финализация
+    setTimeout(() => {
+      document.body.classList.remove('upgrade-hiding');
+      document.body.classList.remove('upgrade-showing');
+      upgradeAnimating = false;
+    }, 1600);
   }
 
   // Мост из iframe: J+C открывает админку родителя
@@ -4252,13 +4714,13 @@ console.log('Space — крутить / B — турбо');
   }
 
   /* ---------- Приколы: применить ---------- */
-  function applyPrank(id, on){
+  function applyPrank(id, on, silent){
     const prank = PRANKS[id];
     if (!prank) return;
 
     if (id === 'upgradetime'){
-      if (on) showUpgradeTime();
-      else hideUpgradeTime();
+      if (on) showUpgradeTime(silent !== true);
+      else hideUpgradeTime(silent !== true);
       if (on) activePranks.add(id);
       else activePranks.delete(id);
       savePranks();
@@ -4282,14 +4744,14 @@ console.log('Space — крутить / B — турбо');
 
   function togglePrank(id){
     const on = !activePranks.has(id);
-    applyPrank(id, on);
+    applyPrank(id, on, false);
     broadcast({ type: 'prank', id, on });
     adminLog((on ? 'Запущено: ' : 'Остановлено: ') + PRANKS[id].name, on ? '' : 'ok');
 
     if (on && !PRANKS[id].persistent && PRANKS[id].duration){
       setTimeout(() => {
         if (activePranks.has(id)){
-          applyPrank(id, false);
+          applyPrank(id, false, false);
           broadcast({ type: 'prank', id, on: false });
         }
       }, PRANKS[id].duration);
@@ -4299,7 +4761,7 @@ console.log('Space — крутить / B — турбо');
   function stopAllPranks(silent = false){
     const ids = [...activePranks];
     ids.forEach(id => {
-      applyPrank(id, false);
+      applyPrank(id, false, silent);
       if (!silent) broadcast({ type: 'prank', id, on: false });
     });
     if (!silent) adminLog('СТОП ВСЁ: все приколы выключены', 'err');
@@ -4449,7 +4911,7 @@ console.log('Space — крутить / B — турбо');
   });
 
   buildAdminGrid();
-  adminStopAll.addEventListener('click', () => stopAllPranks());
+  adminStopAll.addEventListener('click', () => stopAllPranks(false));
   adminClose.addEventListener('click', () => toggleAdmin(false));
   adminBackdrop.addEventListener('click', () => toggleAdmin(false));
 
@@ -4552,7 +5014,7 @@ console.log('Space — крутить / B — турбо');
       if (!msg) return;
       if (msg.type === 'state') await handleStateChange(msg.state);
       else if (msg.type === 'audio-changed') await handleAudioChange(msg.name);
-      else if (msg.type === 'prank') applyPrank(msg.id, msg.on);
+      else if (msg.type === 'prank') applyPrank(msg.id, msg.on, false);
       else if (msg.type === 'stop-all') stopAllPranks(true);
       else if (msg.type === 'broadcast-message'){
         showBroadcastMsg(msg.name, msg.text);
@@ -4567,8 +5029,8 @@ console.log('Space — крутить / B — турбо');
     if (ev.key === PRANKS_KEY){
       try {
         const incoming = new Set(JSON.parse(ev.newValue || '[]'));
-        [...activePranks].forEach(id => { if (!incoming.has(id)) applyPrank(id, false); });
-        incoming.forEach(id => { if (!activePranks.has(id)) applyPrank(id, true); });
+        [...activePranks].forEach(id => { if (!incoming.has(id)) applyPrank(id, false, true); });
+        incoming.forEach(id => { if (!activePranks.has(id)) applyPrank(id, true, true); });
       } catch(e){}
     }
   });
@@ -4598,7 +5060,10 @@ console.log('Space — крутить / B — турбо');
       resize();
 
       const saved = loadPranks();
-      saved.forEach(id => applyPrank(id, true));
+      saved.forEach(id => {
+        // При загрузке — без анимации (silent), чтобы не сюрпризить пользователя
+        applyPrank(id, true, true);
+      });
     }
   }
 
