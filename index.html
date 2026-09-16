@@ -94,7 +94,7 @@
     aspect-ratio:1/1;
     flex:0 0 auto;
   }
-  canvas{
+  canvas#wheel{
     width:100%; height:100%; display:block;
     filter: drop-shadow(0 0 46px hsl(var(--h) var(--s) 40% / 0.35));
   }
@@ -635,6 +635,11 @@
   .admin-tile.special:hover{ background: rgba(255,212,0,.15); border-color: rgba(255,212,0,.65); }
   .admin-tile.special.on{ background: rgba(255,212,0,.22); border-color: #ffd400; box-shadow: 0 0 0 1px rgba(255,212,0,.45) inset, 0 0 18px rgba(255,212,0,.4); }
   .admin-tile.special.on .icon{ color: #ffe345; }
+  .admin-tile.video{ border-color: rgba(80,200,255,.35); background: rgba(80,200,255,.06); }
+  .admin-tile.video .icon{ color: #50c8ff; }
+  .admin-tile.video:hover{ background: rgba(80,200,255,.15); border-color: rgba(80,200,255,.65); }
+  .admin-tile.video.on{ background: rgba(80,200,255,.22); border-color: #50c8ff; box-shadow: 0 0 0 1px rgba(80,200,255,.45) inset, 0 0 18px rgba(80,200,255,.4); }
+  .admin-tile.video.on .icon{ color: #8fe0ff; }
   .admin-section{ border-top: 1px dashed hsl(var(--h) var(--s) 50% / 0.18); padding-top: 10px; display: flex; flex-direction: column; gap: 8px; }
   .admin-label{
     font-size: 10px; letter-spacing: .14em;
@@ -784,32 +789,13 @@
     will-change: opacity;
     opacity: 0;
   }
+  body.upgrade-showing #upgradeTimeFrame{ animation: ut-frame-fade .35s ease forwards; }
+  @keyframes ut-frame-fade{ from{ opacity: 0; } to{ opacity: 1; } }
 
-  body.upgrade-showing #upgradeTimeFrame{
-    animation: ut-frame-fade .35s ease forwards;
-  }
-  @keyframes ut-frame-fade{
-    from{ opacity: 0; }
-    to  { opacity: 1; }
-  }
-
-  /* Стадия схлопывается вниз при появлении апгрейда */
-  body.upgrade-showing .stage{
-    animation: ut-stage-collapse .55s cubic-bezier(.55,0,.75,1) forwards !important;
-    pointer-events: none;
-  }
-  body.upgrade-showing .tg-badge{
-    animation: ut-collapse-right .55s cubic-bezier(.55,0,.75,1) forwards !important;
-    pointer-events: none;
-  }
-  body.upgrade-showing .open-settings{
-    animation: ut-collapse-left .55s cubic-bezier(.55,0,.75,1) forwards !important;
-    pointer-events: none;
-  }
-  body.upgrade-showing .broadcast-stack{
-    animation: ut-collapse-right .5s cubic-bezier(.55,0,.75,1) forwards !important;
-    pointer-events: none;
-  }
+  body.upgrade-showing .stage{ animation: ut-stage-collapse .55s cubic-bezier(.55,0,.75,1) forwards !important; pointer-events: none; }
+  body.upgrade-showing .tg-badge{ animation: ut-collapse-right .55s cubic-bezier(.55,0,.75,1) forwards !important; pointer-events: none; }
+  body.upgrade-showing .open-settings{ animation: ut-collapse-left .55s cubic-bezier(.55,0,.75,1) forwards !important; pointer-events: none; }
+  body.upgrade-showing .broadcast-stack{ animation: ut-collapse-right .5s cubic-bezier(.55,0,.75,1) forwards !important; pointer-events: none; }
   @keyframes ut-stage-collapse{
     0%   { transform: translateY(0) rotate(0) scale(1); opacity: 1; filter: blur(0); }
     15%  { transform: translateY(-18px) rotate(-1.2deg) scale(1.03); opacity: 1; filter: blur(0); }
@@ -827,36 +813,17 @@
   }
 
   /* ============================================================
-     SITE ENTRANCE — появление сайта (при загрузке и после апгрейда)
+     SITE ENTRANCE
      ============================================================ */
-  body.site-entrance .wheel-wrap{
-    animation: site-block-slam .65s cubic-bezier(.2,1.05,.35,1) 0ms both;
-    will-change: transform, opacity;
-  }
-  body.site-entrance .result{
-    animation: site-block-slam .60s cubic-bezier(.2,1.05,.35,1) 80ms both;
-  }
-  body.site-entrance .status{
-    animation: site-block-slam .55s cubic-bezier(.2,1.05,.35,1) 160ms both;
-  }
-  body.site-entrance .main-controls{
-    animation: site-block-slam .60s cubic-bezier(.2,1.05,.35,1) 240ms both;
-  }
-  body.site-entrance .player{
-    animation: site-block-slam .60s cubic-bezier(.2,1.05,.35,1) 320ms both;
-  }
-  body.site-entrance .hint{
-    animation: site-block-slam .55s cubic-bezier(.2,1.05,.35,1) 400ms both;
-  }
-  body.site-entrance .tg-badge{
-    animation: site-right-slam .60s cubic-bezier(.2,1.05,.35,1) 100ms both;
-  }
-  body.site-entrance .open-settings{
-    animation: site-left-slam .60s cubic-bezier(.2,1.05,.35,1) 150ms both;
-  }
-  body.site-entrance .broadcast-stack{
-    animation: site-right-slam .55s cubic-bezier(.2,1.05,.35,1) 200ms both;
-  }
+  body.site-entrance .wheel-wrap{ animation: site-block-slam .65s cubic-bezier(.2,1.05,.35,1) 0ms both; will-change: transform, opacity; }
+  body.site-entrance .result{ animation: site-block-slam .60s cubic-bezier(.2,1.05,.35,1) 80ms both; }
+  body.site-entrance .status{ animation: site-block-slam .55s cubic-bezier(.2,1.05,.35,1) 160ms both; }
+  body.site-entrance .main-controls{ animation: site-block-slam .60s cubic-bezier(.2,1.05,.35,1) 240ms both; }
+  body.site-entrance .player{ animation: site-block-slam .60s cubic-bezier(.2,1.05,.35,1) 320ms both; }
+  body.site-entrance .hint{ animation: site-block-slam .55s cubic-bezier(.2,1.05,.35,1) 400ms both; }
+  body.site-entrance .tg-badge{ animation: site-right-slam .60s cubic-bezier(.2,1.05,.35,1) 100ms both; }
+  body.site-entrance .open-settings{ animation: site-left-slam .60s cubic-bezier(.2,1.05,.35,1) 150ms both; }
+  body.site-entrance .broadcast-stack{ animation: site-right-slam .55s cubic-bezier(.2,1.05,.35,1) 200ms both; }
 
   @keyframes site-block-slam{
     0%   { opacity: 0; transform: translateY(-65vh) rotate(-6deg) scale(.65); filter: blur(5px); }
@@ -875,7 +842,6 @@
     100% { opacity: 1; transform: translate(0,0) rotate(0) scale(1); filter: blur(0); }
   }
 
-  /* Silent mode для site-entrance (если прикол включается без анимации) */
   body.site-entrance.site-silent .wheel-wrap,
   body.site-entrance.site-silent .result,
   body.site-entrance.site-silent .status,
@@ -889,34 +855,15 @@
     animation-delay: 0s !important;
   }
 
-  /* Вспышка */
-  .ut-flash{
-    position: fixed; inset: 0;
-    z-index: 99994;
-    background: #ffffff;
-    opacity: 0;
-    pointer-events: none;
-  }
+  .ut-flash{ position: fixed; inset: 0; z-index: 99994; background: #ffffff; opacity: 0; pointer-events: none; }
   .ut-flash.flash{ animation: ut-flash-pop .42s ease-out; }
-  @keyframes ut-flash-pop{
-    0%   { opacity: 0; }
-    18%  { opacity: .92; }
-    100% { opacity: 0; }
-  }
+  @keyframes ut-flash-pop{ 0%{opacity:0} 18%{opacity:.92} 100%{opacity:0} }
 
-  /* Осколки */
-  .ut-shards{
-    position: fixed; inset: 0;
-    z-index: 99993;
-    pointer-events: none;
-    overflow: hidden;
-  }
+  .ut-shards{ position: fixed; inset: 0; z-index: 99993; pointer-events: none; overflow: hidden; }
   .ut-shard{
-    position: absolute;
-    left: 50%; top: 50%;
+    position: absolute; left: 50%; top: 50%;
     width: 10px; height: 3px;
-    background: #ffffff;
-    border-radius: 1px;
+    background: #ffffff; border-radius: 1px;
     box-shadow: 0 0 8px rgba(255,255,255,.9), 0 0 20px rgba(255,220,120,.6);
     transform-origin: 50% 50%;
     animation: ut-shard-fly .7s ease-out forwards;
@@ -933,6 +880,31 @@
     35% { transform: translate(5px, -5px) rotate(.4deg) }
     55% { transform: translate(-4px, 3px) rotate(-.3deg) }
     75% { transform: translate(3px, -2px) rotate(.2deg) }
+  }
+
+  /* ============================================================
+     CHROMA KEY VIDEO
+     ============================================================ */
+  #chromaCanvas{
+    position: fixed;
+    z-index: 99991;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .6s ease;
+    will-change: opacity;
+    display: block;
+  }
+  #chromaCanvas.visible{
+    opacity: 1;
+  }
+  #chromaVideo{
+    position: fixed;
+    left: -9999px;
+    top: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
   }
 
   @media (max-width:600px){
@@ -1189,6 +1161,10 @@
     </div>
   </div>
 </div>
+
+<!-- Chroma key video -->
+<video id="chromaVideo" playsinline loop muted preload="auto" crossorigin="anonymous"></video>
+<canvas id="chromaCanvas"></canvas>
 
 <template id="upgradeTimeTemplate">
 <meta charset="UTF-8" />
@@ -1992,6 +1968,14 @@ window.addEventListener('message', e => {
   const $ = id => document.getElementById(id);
   const isSettingsMode = new URLSearchParams(location.search).has('settings');
 
+  // ============================================================
+  // НАСТРОЙКИ ВИДЕО (chroma key)
+  // ============================================================
+  const VIDEO_SRC = 'video.mp4';           // ← путь к видеофайлу
+  const CHROMA_KEY = [0.0, 1.0, 0.0];       // RGB ключевого цвета (0..1). Чистый зелёный = [0,1,0]
+  const CHROMA_TOLERANCE = 0.45;            // допуск (чем больше — тем больше зелёного съест)
+  const CHROMA_SMOOTHNESS = 0.18;           // мягкость края
+
   const ICON = {
     play:  '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg>',
     pause: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/></svg>',
@@ -2052,6 +2036,9 @@ window.addEventListener('message', e => {
   const bsodPercent  = $('bsodPercent');
   const bsodQr       = $('bsodQr');
   const upgradeTimeTemplateEl = $('upgradeTimeTemplate');
+
+  const chromaVideoEl  = $('chromaVideo');
+  const chromaCanvasEl = $('chromaCanvas');
 
   const SYNC_CH = 'wheel-remix-sync-v2';
   const STORAGE_KEY = 'wheel-remix-state-v2';
@@ -2383,6 +2370,271 @@ window.addEventListener('message', e => {
   seekBar.addEventListener('pointercancel', () => { seeking = false; });
   volumeBar.addEventListener('input', () => { audioEl.volume = Math.max(0, Math.min(1, parseFloat(volumeBar.value))); updateRangeFill(volumeBar); });
 
+  // ============================================================
+  // CHROMA KEY VIDEO ENGINE
+  // ============================================================
+  let chromaGL = null, chromaProgram = null, chromaTexture = null, chromaRAF = null;
+  let chromaActive = false, chromaReady = false;
+  let chromaFadeTimeout = null;
+
+  const VS_SOURCE = `
+    attribute vec2 a_position;
+    attribute vec2 a_texCoord;
+    varying vec2 v_texCoord;
+    void main(){
+      gl_Position = vec4(a_position, 0.0, 1.0);
+      v_texCoord = a_texCoord;
+    }
+  `;
+
+  const FS_SOURCE = `
+    precision mediump float;
+    varying vec2 v_texCoord;
+    uniform sampler2D u_video;
+    uniform vec3 u_keyColor;
+    uniform float u_tolerance;
+    uniform float u_smoothness;
+
+    void main(){
+      vec4 color = texture2D(u_video, v_texCoord);
+
+      // Distance to key color in RGB space
+      vec3 diff = color.rgb - u_keyColor;
+      float dist = sqrt(diff.r * diff.r + diff.g * diff.g + diff.b * diff.b);
+
+      // Also check green dominance (helps with anti-aliased edges)
+      float maxRB = max(color.r, color.b);
+      float greenDominance = color.g - maxRB;
+
+      // If green dominates strongly — treat as background
+      float greenMask = smoothstep(0.05, 0.2, greenDominance);
+
+      // Distance-based alpha
+      float distAlpha = smoothstep(u_tolerance, u_tolerance + u_smoothness, dist);
+
+      // Combine: if either distance OR dominance suggests green, kill alpha
+      float alpha = min(distAlpha, 1.0 - greenMask * 0.9);
+
+      // Spill suppression: reduce green tint on edges
+      vec3 adjusted = color.rgb;
+      float spill = (1.0 - alpha) * 0.6;
+      adjusted.g = mix(adjusted.g, maxRB, spill);
+
+      gl_FragColor = vec4(adjusted, color.a * alpha);
+    }
+  `;
+
+  function initChromaGL(){
+    if (chromaGL) return true;
+
+    const gl = chromaCanvasEl.getContext('webgl', {
+      alpha: true,
+      premultipliedAlpha: false,
+      antialias: false,
+      preserveDrawingBuffer: false
+    }) || chromaCanvasEl.getContext('experimental-webgl', {
+      alpha: true,
+      premultipliedAlpha: false,
+      antialias: false
+    });
+
+    if (!gl){
+      console.warn('WebGL не поддерживается — chroma key недоступен');
+      return false;
+    }
+
+    const vs = gl.createShader(gl.VERTEX_SHADER);
+    gl.shaderSource(vs, VS_SOURCE);
+    gl.compileShader(vs);
+    if (!gl.getShaderParameter(vs, gl.COMPILE_STATUS)){
+      console.error('VS error:', gl.getShaderInfoLog(vs));
+      return false;
+    }
+
+    const fs = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fs, FS_SOURCE);
+    gl.compileShader(fs);
+    if (!gl.getShaderParameter(fs, gl.COMPILE_STATUS)){
+      console.error('FS error:', gl.getShaderInfoLog(fs));
+      return false;
+    }
+
+    const program = gl.createProgram();
+    gl.attachShader(program, vs);
+    gl.attachShader(program, fs);
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)){
+      console.error('Program link error:', gl.getProgramInfoLog(program));
+      return false;
+    }
+
+    gl.useProgram(program);
+
+    // Fullscreen quad
+    const positions = new Float32Array([
+      -1, -1, 1, -1, -1, 1,
+      -1, 1, 1, -1, 1, 1
+    ]);
+    const texCoords = new Float32Array([
+      0, 1, 1, 1, 0, 0,
+      0, 0, 1, 1, 1, 0
+    ]);
+
+    const posBuf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
+    gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+    const posLoc = gl.getAttribLocation(program, 'a_position');
+    gl.enableVertexAttribArray(posLoc);
+    gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+    const texBuf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, texBuf);
+    gl.bufferData(gl.ARRAY_BUFFER, texCoords, gl.STATIC_DRAW);
+    const texLoc = gl.getAttribLocation(program, 'a_texCoord');
+    gl.enableVertexAttribArray(texLoc);
+    gl.vertexAttribPointer(texLoc, 2, gl.FLOAT, false, 0, 0);
+
+    // Texture
+    const tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+    gl.uniform1i(gl.getUniformLocation(program, 'u_video'), 0);
+    gl.uniform3fv(gl.getUniformLocation(program, 'u_keyColor'), CHROMA_KEY);
+    gl.uniform1f(gl.getUniformLocation(program, 'u_tolerance'), CHROMA_TOLERANCE);
+    gl.uniform1f(gl.getUniformLocation(program, 'u_smoothness'), CHROMA_SMOOTHNESS);
+
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.clearColor(0, 0, 0, 0);
+
+    chromaGL = gl;
+    chromaProgram = program;
+    chromaTexture = tex;
+    return true;
+  }
+
+  function layoutChromaCanvas(){
+    if (!chromaGL) return;
+    const vw = chromaVideoEl.videoWidth;
+    const vh = chromaVideoEl.videoHeight;
+    if (!vw || !vh) return;
+
+    const ww = window.innerWidth;
+    const wh = window.innerHeight;
+    const scale = Math.min(ww / vw, wh / vh);
+    const cw = vw * scale;
+    const ch = vh * scale;
+
+    // internal resolution = video resolution (1:1 sampling)
+    chromaCanvasEl.width = vw;
+    chromaCanvasEl.height = vh;
+
+    // CSS size = scaled to fit viewport
+    chromaCanvasEl.style.width = cw + 'px';
+    chromaCanvasEl.style.height = ch + 'px';
+    chromaCanvasEl.style.left = ((ww - cw) / 2) + 'px';
+    chromaCanvasEl.style.top = ((wh - ch) / 2) + 'px';
+
+    chromaGL.viewport(0, 0, vw, vh);
+  }
+
+  function renderChromaFrame(){
+    if (!chromaGL || !chromaActive) return;
+    if (chromaVideoEl.readyState < 2){
+      chromaRAF = requestAnimationFrame(renderChromaFrame);
+      return;
+    }
+
+    const gl = chromaGL;
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    if (chromaVideoEl.videoWidth && chromaCanvasEl.width !== chromaVideoEl.videoWidth){
+      layoutChromaCanvas();
+    }
+
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, chromaTexture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, chromaVideoEl);
+
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+    chromaRAF = requestAnimationFrame(renderChromaFrame);
+  }
+
+  function showChromaVideo(animate){
+    if (chromaActive) return;
+    if (!initChromaGL()){
+      console.warn('chroma init failed');
+      return;
+    }
+
+    // Сброс предыдущего fade
+    if (chromaFadeTimeout){ clearTimeout(chromaFadeTimeout); chromaFadeTimeout = null; }
+    chromaCanvasEl.classList.remove('visible');
+
+    // Play video
+    chromaVideoEl.currentTime = 0;
+    const playPromise = chromaVideoEl.play();
+    if (playPromise && playPromise.catch){
+      playPromise.catch(err => {
+        console.warn('video play failed:', err);
+      });
+    }
+
+    chromaActive = true;
+
+    // Ждём метаданные, потом показываем canvas
+    const onMeta = () => {
+      layoutChromaCanvas();
+      if (!chromaRAF) renderChromaFrame();
+
+      if (animate === false){
+        chromaCanvasEl.style.transition = 'none';
+        chromaCanvasEl.classList.add('visible');
+        requestAnimationFrame(() => { chromaCanvasEl.style.transition = ''; });
+      } else {
+        chromaCanvasEl.classList.add('visible');
+      }
+    };
+
+    if (chromaVideoEl.videoWidth && chromaVideoEl.videoHeight){
+      onMeta();
+    } else {
+      chromaVideoEl.addEventListener('loadedmetadata', onMeta, { once: true });
+    }
+  }
+
+  function hideChromaVideo(animate){
+    if (!chromaActive) return;
+    if (chromaFadeTimeout){ clearTimeout(chromaFadeTimeout); chromaFadeTimeout = null; }
+
+    chromaCanvasEl.classList.remove('visible');
+
+    const fadeMs = animate === false ? 0 : 600;
+
+    chromaFadeTimeout = setTimeout(() => {
+      chromaActive = false;
+      if (chromaRAF){ cancelAnimationFrame(chromaRAF); chromaRAF = null; }
+      try { chromaVideoEl.pause(); chromaVideoEl.currentTime = 0; } catch(e){}
+      chromaFadeTimeout = null;
+    }, fadeMs);
+  }
+
+  window.addEventListener('resize', () => {
+    if (chromaActive) layoutChromaCanvas();
+  });
+
+  // Инициализация src видео
+  chromaVideoEl.src = VIDEO_SRC;
+
+  // ============================================================
+  // PARENT AUDIO
+  // ============================================================
   const ParentAudioCtx = window.AudioContext || window.webkitAudioContext;
   let parentAudioCtx = null, parentMasterGain = null, parentNoiseBuf = null;
 
@@ -2527,6 +2779,9 @@ window.addEventListener('message', e => {
     setTimeout(() => container.remove(), 900);
   }
 
+  // ============================================================
+  // UPGRADE TIME
+  // ============================================================
   function buildUpgradeSrcdoc(){
     const now = Date.now();
     const arr = allOptions.map((name, i) => ({ id: 'wt_' + now + '_' + i, name: String(name), score: 30 }));
@@ -2611,6 +2866,9 @@ window.addEventListener('message', e => {
     if (e.data && e.data.type === 'admin-shortcut') toggleAdmin();
   });
 
+  // ============================================================
+  // ПРИКОЛЫ
+  // ============================================================
   const PRANKS = {
     shake: { name: 'Тряска', persistent: true, icon: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>' },
     flip: { name: 'Переворот', persistent: true, icon: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9 9 0 0 1 9 9"/><path d="M21 12a9 9 0 0 1-9 9 9 9 0 0 1-9-9"/><polyline points="15 15 12 12 9 15"/><polyline points="15 9 12 12 9 9"/></svg>' },
@@ -2624,6 +2882,7 @@ window.addEventListener('message', e => {
     wobblemouse: { name: 'Пьяная мышь', persistent: true, icon: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="3" width="12" height="18" rx="6"/><path d="M4 14c2-3 4 3 6 0s4 3 6 0 4 3 4 0" stroke-dasharray="2 2"/></svg>' },
     bsod: { name: 'Синий экран', persistent: true, icon: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 14c.5-1.5 1.5-2 2-2M16 14c-.5-1.5-1.5-2-2-2M9 18h6"/></svg>' },
     upgradetime: { name: 'Время апгрейда', persistent: true, special: true, fullscreen: true, icon: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>' },
+    chromavideo: { name: 'Видео', persistent: true, video: true, icon: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>' },
     confetti: { name: 'Конфетти', persistent: false, duration: 6000, icon: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.8 11.3 2 22l10.7-3.79"/></svg>' },
     bubbles: { name: 'Пузыри', persistent: false, duration: 8000, icon: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="3"/><circle cx="16" cy="10" r="4"/><circle cx="15" cy="18" r="2"/></svg>' }
   };
@@ -2710,6 +2969,7 @@ window.addEventListener('message', e => {
   function applyPrank(id, on, silent){
     const prank = PRANKS[id];
     if (!prank) return;
+
     if (id === 'upgradetime'){
       if (on) showUpgradeTime(silent !== true);
       else hideUpgradeTime(silent !== true);
@@ -2717,6 +2977,15 @@ window.addEventListener('message', e => {
       savePranks(); updateAdminTiles();
       return;
     }
+
+    if (id === 'chromavideo'){
+      if (on) showChromaVideo(silent !== true);
+      else hideChromaVideo(silent !== true);
+      if (on) activePranks.add(id); else activePranks.delete(id);
+      savePranks(); updateAdminTiles();
+      return;
+    }
+
     document.body.classList.remove('prank-' + id);
     void document.body.offsetWidth;
     if (on) document.body.classList.add('prank-' + id);
@@ -2781,7 +3050,10 @@ window.addEventListener('message', e => {
     adminGrid.innerHTML = '';
     Object.entries(PRANKS).forEach(([id, p]) => {
       const btn = document.createElement('button');
-      btn.className = 'admin-tile' + (p.special ? ' special' : '');
+      let cls = 'admin-tile';
+      if (p.special) cls += ' special';
+      if (p.video) cls += ' video';
+      btn.className = cls;
       btn.dataset.prank = id;
       btn.innerHTML = p.icon + '<span>' + p.name + '</span>';
       btn.addEventListener('click', () => togglePrank(id));
@@ -2907,7 +3179,6 @@ window.addEventListener('message', e => {
       const saved = loadPranks();
       saved.forEach(id => { applyPrank(id, true, true); });
 
-      // Если апгрейд НЕ активен — играем анимацию появления сайта
       if (!saved.has('upgradetime')){
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
