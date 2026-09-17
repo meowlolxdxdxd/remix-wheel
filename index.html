@@ -59,7 +59,6 @@
   body.main-mode .settings-only{ display:none !important; }
   body.settings-mode .main-only{ display:none !important; }
 
-  /* ---------- Скроллбары ---------- */
   .panel::-webkit-scrollbar,
   .audio-list::-webkit-scrollbar,
   #winnersList::-webkit-scrollbar,
@@ -80,7 +79,6 @@
     border:1px solid rgba(255,255,255,.08);
   }
 
-  /* ---------- Главная сцена ---------- */
   .stage{
     position:fixed; inset:0;
     display:flex; flex-direction:column;
@@ -256,7 +254,6 @@
   .tg-badge svg{ width:22px; height:22px; flex:0 0 auto; fill:#2AABEE; filter:drop-shadow(0 0 6px rgba(42,171,238,.35)); }
   .tg-badge span{ white-space:nowrap; }
 
-  /* ---------- Broadcast-сообщения ---------- */
   .broadcast-stack{
     position: fixed;
     top: 74px; right: 18px;
@@ -307,7 +304,6 @@
   .broadcast-msg.out{ animation: bc-slide-out .3s ease forwards; }
   @keyframes bc-slide-out{ to{ opacity: 0; transform: translateX(48px) scale(.92); } }
 
-  /* ---------- Плеер ---------- */
   .player{
     display:flex; align-items:center; gap:10px;
     width:min(700px, 100%); max-width:100%;
@@ -396,7 +392,6 @@
     box-shadow: none; cursor: pointer;
   }
 
-  /* ---------- Настройки ---------- */
   .settings-page{ min-height:100vh; display:flex; justify-content:center; padding:22px; }
   .panel{
     width:100%; max-width:480px;
@@ -521,9 +516,6 @@
   #winnersList .name{ overflow-wrap:anywhere; }
   @keyframes slideIn{ from{ opacity:0; transform:translateX(-12px); } to{ opacity:1; transform:none; } }
 
-  /* ============================================================
-     ADMIN HUD
-     ============================================================ */
   .admin-backdrop{
     position: fixed; inset: 0;
     background: rgba(0,0,0,.55);
@@ -668,9 +660,6 @@
   .bc-form{ display: flex; flex-direction: column; gap: 10px; }
   .bc-hint{ font-size: 11px; color: #6b7590; line-height: 1.4; }
 
-  /* ============================================================
-     ПРИКОЛЫ
-     ============================================================ */
   body.prank-shake .stage,
   body.prank-shake .tg-badge,
   body.prank-shake .open-settings,
@@ -753,7 +742,6 @@
   }
   @keyframes fx-bubble-rise{ to { transform: translateY(-115vh) translateX(var(--drift, 0)); opacity: 0; } }
 
-  /* BSOD */
   .bsod{
     position: fixed; inset: 0; z-index: 99990;
     background: #0078D7; color: #ffffff;
@@ -776,9 +764,6 @@
   .bsod-footer-text .line{ margin-bottom: 4px; }
   .bsod-footer-text .url{ text-decoration: underline; text-underline-offset: 2px; }
 
-  /* ============================================================
-     UPGRADE TIME — iframe
-     ============================================================ */
   #upgradeTimeFrame{
     position: fixed; inset: 0;
     width: 100vw; height: 100vh;
@@ -812,9 +797,6 @@
     100% { transform: translate(-52vw, 112vh) rotate(-38deg); opacity: 0; }
   }
 
-  /* ============================================================
-     SITE ENTRANCE
-     ============================================================ */
   body.site-entrance .wheel-wrap{ animation: site-block-slam .65s cubic-bezier(.2,1.05,.35,1) 0ms both; will-change: transform, opacity; }
   body.site-entrance .result{ animation: site-block-slam .60s cubic-bezier(.2,1.05,.35,1) 80ms both; }
   body.site-entrance .status{ animation: site-block-slam .55s cubic-bezier(.2,1.05,.35,1) 160ms both; }
@@ -882,9 +864,6 @@
     75% { transform: translate(3px, -2px) rotate(.2deg) }
   }
 
-  /* ============================================================
-     CHROMA KEY VIDEO
-     ============================================================ */
   #chromaCanvas{
     position: fixed;
     z-index: 99991;
@@ -894,9 +873,7 @@
     will-change: opacity;
     display: block;
   }
-  #chromaCanvas.visible{
-    opacity: 1;
-  }
+  #chromaCanvas.visible{ opacity: 1; }
   #chromaVideo{
     position: fixed;
     left: -9999px;
@@ -1117,7 +1094,7 @@
           Отправить всем
         </button>
 
-        <div class="bc-hint">Сообщение всплывёт у всех под Telegram-бейджем в зелёной рамке. Автоскрытие через 12 секунд.</div>
+        <div class="bc-hint">Сообщение всплывёт у всех пользователей сайта в зелёной рамке. Автоскрытие через 12 секунд.</div>
       </div>
     </div>
 
@@ -1143,7 +1120,7 @@
         <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         Журнал
       </div>
-      <div class="admin-log" id="adminLog"><div class="empty">Пранки и сообщения синхронизируются во всех вкладках.</div></div>
+      <div class="admin-log" id="adminLog"><div class="empty">Пранки синхронизируются через Firebase.</div></div>
     </div>
   </div>
 </div>
@@ -1162,7 +1139,6 @@
   </div>
 </div>
 
-<!-- Chroma key video -->
 <video id="chromaVideo" playsinline loop preload="auto" crossorigin="anonymous"></video>
 <canvas id="chromaCanvas"></canvas>
 
@@ -1553,7 +1529,7 @@ body::before {
   import { getDatabase, ref, set, push, onValue, onChildAdded } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyBbs_ejpYtY9rMfbgQ9l-Je3IhATbDyyF3U",
+    apiKey: "AIzaSyBbs_ejpYt9rMfbgQ9l-Je3IhATbDyyF3U",
     authDomain: "remix-wheel.firebaseapp.com",
     databaseURL: "https://remix-wheel-default-rtdb.firebaseio.com",
     projectId: "remix-wheel",
@@ -1566,9 +1542,25 @@ body::before {
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
+  // Флаг: получили ли мы актуальный снимок ветки pranks из Firebase.
+  // До этого момента нельзя писать в Firebase — иначе затрём чужие приколы пустотой.
+  window.__fbPranksReady = false;
+
   window.__firebaseBridge = {
     ready: Promise.resolve(),
 
+    // Пишем ТОЛЬКО один прикол — не трогаем остальные ключи.
+    async setOnePrank(id, on) {
+      if (!id) return;
+      await set(ref(db, "global/pranks/" + id), !!on);
+    },
+
+    // Очистить всю ветку приколов (для кнопки «СТОП ВСЁ»).
+    async clearPranks() {
+      await set(ref(db, "global/pranks"), null);
+    },
+
+    // Совместимость со старым вызовом — но используется только для полной замены.
     async setPranks(pranks) {
       await set(ref(db, "global/pranks"), pranks || {});
     },
@@ -1588,6 +1580,8 @@ body::before {
     listen({ onPranks, onState, onMessage }) {
       onValue(ref(db, "global/pranks"), snap => {
         const value = snap.val();
+        // С этого момента можем безопасно писать — у нас актуальный снимок.
+        window.__fbPranksReady = true;
         onPranks && onPranks(value && typeof value === "object" ? value : {});
       });
 
@@ -2029,13 +2023,10 @@ window.addEventListener('message', e => {
   const $ = id => document.getElementById(id);
   const isSettingsMode = new URLSearchParams(location.search).has('settings');
 
-  // ============================================================
-  // НАСТРОЙКИ ВИДЕО (chroma key)
-  // ============================================================
-  const VIDEO_SRC = 'video.mp4';           // ← путь к видеофайлу
-  const CHROMA_KEY = [0.0, 1.0, 0.0];       // RGB ключевого цвета (0..1). Чистый зелёный = [0,1,0]
-  const CHROMA_TOLERANCE = 0.45;            // допуск (чем больше — тем больше зелёного съест)
-  const CHROMA_SMOOTHNESS = 0.18;           // мягкость края
+  const VIDEO_SRC = 'video.mp4';
+  const CHROMA_KEY = [0.0, 1.0, 0.0];
+  const CHROMA_TOLERANCE = 0.45;
+  const CHROMA_SMOOTHNESS = 0.18;
 
   const ICON = {
     play:  '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg>',
@@ -2113,19 +2104,32 @@ window.addEventListener('message', e => {
     if (syncCh) { try { syncCh.postMessage(msg); } catch(e){} }
   };
 
-  // Firebase — общая синхронизация для ВСЕХ открытых страниц.
-  function firebasePranksObject(){
-    const result = {};
-    activePranks.forEach(id => { result[id] = true; });
-    return result;
-  }
-
-  function firebaseSetPranks(){
+  // ============================================================
+  // Firebase helpers
+  // ============================================================
+  function firebaseSetOnePrank(id, on){
+    if (!id) return;
+    // Не пишем, пока не получили актуальный снимок ветки pranks.
+    // Иначе рискуем затереть чужие приколы пустотой.
+    if (!window.__fbPranksReady){
+      setTimeout(() => firebaseSetOnePrank(id, on), 250);
+      return;
+    }
     try {
-      if (window.__firebaseBridge) {
-        window.__firebaseBridge.setPranks(firebasePranksObject()).catch(e => {
+      if (window.__firebaseBridge && window.__firebaseBridge.setOnePrank) {
+        window.__firebaseBridge.setOnePrank(id, on).catch(e => {
           console.error("Firebase prank sync:", e);
           adminLog("Firebase: не удалось синхронизировать прикол", "err");
+        });
+      }
+    } catch(e) {}
+  }
+
+  function firebaseClearPranks(){
+    try {
+      if (window.__firebaseBridge && window.__firebaseBridge.clearPranks) {
+        window.__firebaseBridge.clearPranks().catch(e => {
+          console.error("Firebase clear pranks:", e);
         });
       }
     } catch(e) {}
@@ -2150,6 +2154,9 @@ window.addEventListener('message', e => {
     } catch(e) {}
   }
 
+  // ============================================================
+  // IndexedDB
+  // ============================================================
   function openDB(){
     return new Promise((res, rej) => {
       const req = indexedDB.open(DB_NAME, 1);
@@ -2475,7 +2482,7 @@ window.addEventListener('message', e => {
   // CHROMA KEY VIDEO ENGINE
   // ============================================================
   let chromaGL = null, chromaProgram = null, chromaTexture = null, chromaRAF = null;
-  let chromaActive = false, chromaReady = false;
+  let chromaActive = false;
   let chromaFadeTimeout = null;
 
   const VS_SOURCE = `
@@ -2498,105 +2505,52 @@ window.addEventListener('message', e => {
 
     void main(){
       vec4 color = texture2D(u_video, v_texCoord);
-
-      // Distance to key color in RGB space
       vec3 diff = color.rgb - u_keyColor;
       float dist = sqrt(diff.r * diff.r + diff.g * diff.g + diff.b * diff.b);
-
-      // Also check green dominance (helps with anti-aliased edges)
       float maxRB = max(color.r, color.b);
       float greenDominance = color.g - maxRB;
-
-      // If green dominates strongly — treat as background
       float greenMask = smoothstep(0.05, 0.2, greenDominance);
-
-      // Distance-based alpha
       float distAlpha = smoothstep(u_tolerance, u_tolerance + u_smoothness, dist);
-
-      // Combine: if either distance OR dominance suggests green, kill alpha
       float alpha = min(distAlpha, 1.0 - greenMask * 0.9);
-
-      // Spill suppression: reduce green tint on edges
       vec3 adjusted = color.rgb;
       float spill = (1.0 - alpha) * 0.6;
       adjusted.g = mix(adjusted.g, maxRB, spill);
-
       gl_FragColor = vec4(adjusted, color.a * alpha);
     }
   `;
 
   function initChromaGL(){
     if (chromaGL) return true;
-
-    const gl = chromaCanvasEl.getContext('webgl', {
-      alpha: true,
-      premultipliedAlpha: false,
-      antialias: false,
-      preserveDrawingBuffer: false
-    }) || chromaCanvasEl.getContext('experimental-webgl', {
-      alpha: true,
-      premultipliedAlpha: false,
-      antialias: false
-    });
-
-    if (!gl){
-      console.warn('WebGL не поддерживается — chroma key недоступен');
-      return false;
-    }
+    const gl = chromaCanvasEl.getContext('webgl', { alpha: true, premultipliedAlpha: false, antialias: false, preserveDrawingBuffer: false })
+            || chromaCanvasEl.getContext('experimental-webgl', { alpha: true, premultipliedAlpha: false, antialias: false });
+    if (!gl){ console.warn('WebGL не поддерживается'); return false; }
 
     const vs = gl.createShader(gl.VERTEX_SHADER);
-    gl.shaderSource(vs, VS_SOURCE);
-    gl.compileShader(vs);
-    if (!gl.getShaderParameter(vs, gl.COMPILE_STATUS)){
-      console.error('VS error:', gl.getShaderInfoLog(vs));
-      return false;
-    }
+    gl.shaderSource(vs, VS_SOURCE); gl.compileShader(vs);
+    if (!gl.getShaderParameter(vs, gl.COMPILE_STATUS)){ console.error('VS error:', gl.getShaderInfoLog(vs)); return false; }
 
     const fs = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(fs, FS_SOURCE);
-    gl.compileShader(fs);
-    if (!gl.getShaderParameter(fs, gl.COMPILE_STATUS)){
-      console.error('FS error:', gl.getShaderInfoLog(fs));
-      return false;
-    }
+    gl.shaderSource(fs, FS_SOURCE); gl.compileShader(fs);
+    if (!gl.getShaderParameter(fs, gl.COMPILE_STATUS)){ console.error('FS error:', gl.getShaderInfoLog(fs)); return false; }
 
     const program = gl.createProgram();
-    gl.attachShader(program, vs);
-    gl.attachShader(program, fs);
-    gl.linkProgram(program);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)){
-      console.error('Program link error:', gl.getProgramInfoLog(program));
-      return false;
-    }
-
+    gl.attachShader(program, vs); gl.attachShader(program, fs); gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)){ console.error('Program link error:', gl.getProgramInfoLog(program)); return false; }
     gl.useProgram(program);
 
-    // Fullscreen quad
-    const positions = new Float32Array([
-      -1, -1, 1, -1, -1, 1,
-      -1, 1, 1, -1, 1, 1
-    ]);
-    // Горизонтальное отражение: лево и право меняются местами.
-    const texCoords = new Float32Array([
-      0, 0, 1, 0, 0, 1,
-      0, 1, 1, 0, 1, 1
-    ]);
+    const positions = new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]);
+    const texCoords = new Float32Array([0,0, 1,0, 0,1, 0,1, 1,0, 1,1]);
 
     const posBuf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
-    gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+    gl.bindBuffer(gl.ARRAY_BUFFER, posBuf); gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
     const posLoc = gl.getAttribLocation(program, 'a_position');
-    gl.enableVertexAttribArray(posLoc);
-    gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(posLoc); gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
 
     const texBuf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, texBuf);
-    gl.bufferData(gl.ARRAY_BUFFER, texCoords, gl.STATIC_DRAW);
+    gl.bindBuffer(gl.ARRAY_BUFFER, texBuf); gl.bufferData(gl.ARRAY_BUFFER, texCoords, gl.STATIC_DRAW);
     const texLoc = gl.getAttribLocation(program, 'a_texCoord');
-    gl.enableVertexAttribArray(texLoc);
-    gl.vertexAttribPointer(texLoc, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(texLoc); gl.vertexAttribPointer(texLoc, 2, gl.FLOAT, false, 0, 0);
 
-    // Texture
     const tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -2614,9 +2568,7 @@ window.addEventListener('message', e => {
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.clearColor(0, 0, 0, 0);
 
-    chromaGL = gl;
-    chromaProgram = program;
-    chromaTexture = tex;
+    chromaGL = gl; chromaProgram = program; chromaTexture = tex;
     return true;
   }
 
@@ -2625,23 +2577,17 @@ window.addEventListener('message', e => {
     const vw = chromaVideoEl.videoWidth;
     const vh = chromaVideoEl.videoHeight;
     if (!vw || !vh) return;
-
     const ww = window.innerWidth;
     const wh = window.innerHeight;
     const scale = Math.min(ww / vw, wh / vh) * 0.82;
     const cw = vw * scale;
     const ch = vh * scale;
-
-    // internal resolution = video resolution (1:1 sampling)
     chromaCanvasEl.width = vw;
     chromaCanvasEl.height = vh;
-
-    // CSS size = scaled to fit viewport
     chromaCanvasEl.style.width = cw + 'px';
     chromaCanvasEl.style.height = ch + 'px';
     chromaCanvasEl.style.left = ((ww - cw) / 2) + 'px';
     chromaCanvasEl.style.top = ((wh - ch) / 2) + 'px';
-
     chromaGL.viewport(0, 0, vw, vh);
   }
 
@@ -2651,54 +2597,34 @@ window.addEventListener('message', e => {
       chromaRAF = requestAnimationFrame(renderChromaFrame);
       return;
     }
-
     const gl = chromaGL;
     gl.clear(gl.COLOR_BUFFER_BIT);
-
     if (chromaVideoEl.videoWidth && chromaCanvasEl.width !== chromaVideoEl.videoWidth){
       layoutChromaCanvas();
     }
-
-    // Видео показываем перевёрнутым на 180°, но звук берём напрямую из <video>.
-    // CSS transform не влияет на WebGL-кадр, поэтому переворачиваем UV в шейдере.
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, chromaTexture);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, chromaVideoEl);
-
     gl.drawArrays(gl.TRIANGLES, 0, 6);
-
     chromaRAF = requestAnimationFrame(renderChromaFrame);
   }
 
   function showChromaVideo(animate){
     if (chromaActive) return;
-    if (!initChromaGL()){
-      console.warn('chroma init failed');
-      return;
-    }
-
-    // Сброс предыдущего fade
+    if (!initChromaGL()){ console.warn('chroma init failed'); return; }
     if (chromaFadeTimeout){ clearTimeout(chromaFadeTimeout); chromaFadeTimeout = null; }
     chromaCanvasEl.classList.remove('visible');
-
-    // Play video вместе со звуком. Громкость чуть ниже максимума.
     chromaVideoEl.muted = false;
     chromaVideoEl.volume = 0.8;
     chromaVideoEl.currentTime = 0;
     const playPromise = chromaVideoEl.play();
     if (playPromise && playPromise.catch){
-      playPromise.catch(err => {
-        console.warn('video play failed (браузер мог заблокировать автозвук):', err);
-      });
+      playPromise.catch(err => { console.warn('video play failed:', err); });
     }
-
     chromaActive = true;
-
-    // Ждём метаданные, потом показываем canvas
     const onMeta = () => {
       layoutChromaCanvas();
       if (!chromaRAF) renderChromaFrame();
-
       if (animate === false){
         chromaCanvasEl.style.transition = 'none';
         chromaCanvasEl.classList.add('visible');
@@ -2707,22 +2633,15 @@ window.addEventListener('message', e => {
         chromaCanvasEl.classList.add('visible');
       }
     };
-
-    if (chromaVideoEl.videoWidth && chromaVideoEl.videoHeight){
-      onMeta();
-    } else {
-      chromaVideoEl.addEventListener('loadedmetadata', onMeta, { once: true });
-    }
+    if (chromaVideoEl.videoWidth && chromaVideoEl.videoHeight) onMeta();
+    else chromaVideoEl.addEventListener('loadedmetadata', onMeta, { once: true });
   }
 
   function hideChromaVideo(animate){
     if (!chromaActive) return;
     if (chromaFadeTimeout){ clearTimeout(chromaFadeTimeout); chromaFadeTimeout = null; }
-
     chromaCanvasEl.classList.remove('visible');
-
     const fadeMs = animate === false ? 0 : 600;
-
     chromaFadeTimeout = setTimeout(() => {
       chromaActive = false;
       if (chromaRAF){ cancelAnimationFrame(chromaRAF); chromaRAF = null; }
@@ -2731,24 +2650,7 @@ window.addEventListener('message', e => {
     }, fadeMs);
   }
 
-  window.addEventListener('resize', () => {
-    if (chromaActive) layoutChromaCanvas();
-  });
-
-  // Браузеры часто блокируют звук без первого действия пользователя.
-  // После любого клика/касания пробуем разблокировать аудио видео.
-  const unlockVideoAudio = () => {
-    if (!chromaVideoEl) return;
-    chromaVideoEl.muted = false;
-    chromaVideoEl.volume = 0.8;
-    if (chromaActive && chromaVideoEl.paused) {
-      chromaVideoEl.play().catch(() => {});
-    }
-  };
-  document.addEventListener('pointerdown', unlockVideoAudio, { passive: true });
-  document.addEventListener('keydown', unlockVideoAudio, { passive: true });
-
-  // Инициализация src видео
+  window.addEventListener('resize', () => { if (chromaActive) layoutChromaCanvas(); });
   chromaVideoEl.src = VIDEO_SRC;
 
   // ============================================================
@@ -2773,6 +2675,20 @@ window.addEventListener('message', e => {
     parentNoiseBuf = buf;
     return buf;
   }
+
+  // Разблокировка аудио по первому жесту пользователя.
+  const unlockAllAudio = () => {
+    try { ensureAudio(); } catch(e){}
+    try { ensureParentAudio(); } catch(e){}
+    if (chromaVideoEl) {
+      chromaVideoEl.muted = false;
+      chromaVideoEl.volume = 0.8;
+      if (chromaActive && chromaVideoEl.paused) chromaVideoEl.play().catch(() => {});
+    }
+  };
+  document.addEventListener('pointerdown', unlockAllAudio, { passive: true });
+  document.addEventListener('keydown', unlockAllAudio, { passive: true });
+  document.addEventListener('touchstart', unlockAllAudio, { passive: true });
 
   function playCollapse(){
     if (!parentAudioCtx || !parentMasterGain) return;
@@ -3118,34 +3034,37 @@ window.addEventListener('message', e => {
     savePranks(); updateAdminTiles();
   }
 
+  // ГЛАВНОЕ: togglePrank пишет ТОЛЬКО ОДИН ключ в Firebase — не перезаписывает весь узел.
   function togglePrank(id){
     if (id === 'upgradetime' && upgradeAnimating) return;
     const on = !activePranks.has(id);
     applyPrank(id, on, false);
 
-    // Локально + BroadcastChannel для вкладок + Firebase для всех пользователей.
+    // Локально + BroadcastChannel + Firebase (один ключ).
     broadcast({ type: 'prank', id, on });
-    firebaseSetPranks();
+    firebaseSetOnePrank(id, on);
 
     adminLog((on ? 'Запущено: ' : 'Остановлено: ') + PRANKS[id].name, on ? '' : 'ok');
+
     if (on && !PRANKS[id].persistent && PRANKS[id].duration){
       setTimeout(() => {
         if (activePranks.has(id)){
           applyPrank(id, false, false);
           broadcast({ type: 'prank', id, on: false });
-          firebaseSetPranks();
+          firebaseSetOnePrank(id, false);
         }
       }, PRANKS[id].duration);
     }
   }
 
+  // СТОП ВСЁ — очищает всю ветку pranks в Firebase.
   function stopAllPranks(silent = false){
     const ids = [...activePranks];
     ids.forEach(id => {
       applyPrank(id, false, silent);
       if (!silent) broadcast({ type: 'prank', id, on: false });
     });
-    firebaseSetPranks();
+    firebaseClearPranks();
     if (!silent) adminLog('СТОП ВСЁ: все приколы выключены', 'err');
   }
 
@@ -3313,7 +3232,7 @@ window.addEventListener('message', e => {
           Object.keys(incoming || {}).filter(id => incoming[id] === true && PRANKS[id])
         );
 
-        // Firebase является источником истины для глобальных приколов.
+        // Firebase — источник истины для глобальных приколов.
         [...activePranks].forEach(id => {
           if (!next.has(id)) applyPrank(id, false, true);
         });
@@ -3351,9 +3270,8 @@ window.addEventListener('message', e => {
       if (window.ResizeObserver){ new ResizeObserver(resize).observe(wrapEl); } else { window.addEventListener('resize', resize); }
       resize();
 
-      // Глобальные приколы теперь берутся из Firebase.
-      // Старое localStorage-состояние специально не применяем,
-      // чтобы один пользователь не видел устаревший локальный эффект.
+      // Глобальные приколы берём из Firebase (в setupFirebaseSync).
+      // Локальный localStorage-снимок не применяем, чтобы не было рассинхрона.
 
       if (!activePranks.has('upgradetime')){
         requestAnimationFrame(() => {
